@@ -1,5 +1,6 @@
 use std::io::{self, Read, Write, Bufwriter}
 use std::collections::VecDeque;
+use micromath::F32Ext // checar se há um uso mais apriomorado como f64
 
 enum Token{
     Number(f64).
@@ -8,7 +9,6 @@ enum Token{
     LParen, RParen,
     Comma,
 }
-// falta algo pra log também
 
 enum Expr{
     Number(f64),
@@ -33,8 +33,10 @@ fn tableFunction(expr: &Expr, x:f64) -> VecDeque<pair<f64>>{
         Expr::BinOp(l, op, r)=>{
             let (l, r) = (tableFunction(l,x), tableFunction(r, x));
             match op {Op::Add=> l+r,
-                      Op::Multiply=>l*r
-                      /*TO-DO checar como continuar aqui*/}
+                      Op::Mul=>l*r,
+                      Op::Div=>l/r,
+                      Op::Sub=>l-r
+                      }
         }
         Expr::Call(name, arg)=>{
             let v = tableFunction(arg, x);
@@ -48,8 +50,10 @@ fn tableFunction(expr: &Expr, x:f64) -> VecDeque<pair<f64>>{
     }
 }
 
-fn chasePosRoot(){
+fn chasePosRoot(points: VecDeque<pair<f32, f32>>){
  bool posRaiz=false;
+
+ 
 
 
 }
