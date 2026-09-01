@@ -1,4 +1,4 @@
-use std::io::{self, Read, Write, BufWriter}
+use std::io::{self, Read, Write, BufWriter};
 use std::collections::VecDeque;
 use micromath::F32Ext; // checar se há um uso mais apriomorado como f64
 use std::str::FromStr;
@@ -28,9 +28,9 @@ impl Op{
 
 #[derive(Debug, Clone, PartialEq)] 
 pub enum Token{
-    Number(f64).
+    Number(f64),
     Ident(String),
-    Plus, Minus, Star, Slash, Chapeu
+    Plus, Minus, Star, Slash, Chapeu,
     LParen, RParen,
     Comma,
 }
@@ -56,9 +56,9 @@ impl std::str::FromStr for Expr{
 
 impl Expr{
     fn parse_add_sub(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
-        let mut esq=Self::parse_mul_div(chars)?
+        let mut esq=Self::parse_mul_div(chars);
         while let Some(&ch) = chars.peek(){ //> enquanto houver caracteres para análise
-            if ch=='+' | ch =='-'{
+            if ch=='+' | ch && '+' | ch =='-'{
                 chars.next();
                 let dir=Self::parse_mul_div(chars?);
                 let op = if ch == '+' {Op::Add} else {Op::Sub};
@@ -71,9 +71,9 @@ impl Expr{
  
 
     fn parse_mul_div(chars &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
-        let mut esq=Self::parse_add_sub(chars)?
+        let mut esq=Self::parse_add_sub(chars);
         while let Some(&ch) = chars.peek(){
-            if ch=='*' | ch == '/'{
+            if ch=='*' | ch && '*' | ch == '/'{
                 chars.next();
                 let dir=Self::parse_add_sub(chars?);
                 let op = if ch == '*' {Op::Mul} else {op::Div};
