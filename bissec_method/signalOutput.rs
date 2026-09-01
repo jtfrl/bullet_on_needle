@@ -1,4 +1,4 @@
-use std::io::{self};
+use std::io::{self, BufRead};
 use std::collections::VecDeque;
 //use micromath::F32Ext; 
 //use std::str::FromStr;
@@ -10,6 +10,7 @@ pub enum Op{
     Add, Sub, Mul, Div, Pow
 }
 
+/* COMPILADOR NÃO RECONHECE ISSO COMO ALGO ÚTIL (?)
 impl Op{
     fn precedencia(&self) -> u8{
         match self{
@@ -25,6 +26,7 @@ impl Op{
                                 // manda para 'pow'
     }
 }
+*/    
 
 #[derive(Debug, Clone, PartialEq)] 
 pub enum Token{
@@ -139,7 +141,7 @@ fn eval(expr: &Expr, x: &f64) -> f64{
                       Op::Div=>l/r,
                       Op::Sub=>l-r,
                       Op::Pow=>l.powf(r),
-                      _ => unreachable!(),
+                      //_ => unreachable!(),
                       }
         }
         Expr::Call(name, arg)=>{
@@ -154,14 +156,14 @@ fn eval(expr: &Expr, x: &f64) -> f64{
     }
 }
 
-fn table_function(expr: Expr, input: &[f64]) -> VecDeque<(f64, f64)>{
+fn table_function(_expr: Expr, input: &[f64]) -> VecDeque<(f64, f64)>{
     input
         .iter()
-        .map(|&x| (x, eval(&Expr, x))) //> mapeamento de valores da função
+        .map(|&x| (x, eval(&Expr::Var, &x))) //> mapeamento de valores da função
         .collect() 
 }
 
-fn chasePosRoot(points: &[(f64,f64)]){
+fn chase_pos_root(points: &VecDeque<(f64,f64)>){
     //bool posRaiz=false;
 
     let mut intervalos=Vec::new();
@@ -196,7 +198,7 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
     
     let u_expr: Expr=match line.trim().parse(){
         Ok(e)=>e,
-        Err(err)=>{
+        Err(_err)=>{
             println!("Erro de análise da função!");
             return Ok(());
         }
@@ -219,11 +221,11 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
     }
 
     if values_for_x.len()<10{
-        println("Menos de 10 valores inseridos para a variável.");
+        println!("Menos de 10 valores inseridos para a variável.");
         return Ok(());
     }
 
-    let table = table_function(&u_expr, &values_for_x);
+    let table = table_function(u_expr, &values_for_x);
 
     println!("\n\n --- TABELA DE VALORES (x, F(x)) ---");
     for(x,y) in &table{
@@ -233,7 +235,7 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
     }
 
     println!("\n\n Análise de ráizes:");
-    chasePosRoot(&table);
+    chase_pos_root(&table);
 
     Ok(())
 }
