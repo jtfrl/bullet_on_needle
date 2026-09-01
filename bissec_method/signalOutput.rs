@@ -1,4 +1,4 @@
-use std::io::{self, Read, Write, BufWriter};
+use std::io::{self};
 use std::collections::VecDeque;
 use micromath::F32Ext; // checar se há um uso mais apriomorado como f64
 use std::str::FromStr;
@@ -12,10 +12,10 @@ pub enum Op{
 
 impl Op{
     fn precedencia(&self) -> u8{
-        match{
+        match self{
             Op::Add | Op::Sub => 1,
             Op::Mul | Op::Div => 2,
-            Op::Pow | => 3,
+            Op::Pow => 3,
         }
     }
 
@@ -70,7 +70,7 @@ impl Expr{
     }
  
 
-    fn parse_mul_div(chars &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
+    fn parse_mul_div(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
         let mut esq=Self::parse_primary(chars);
         while let Some(&ch) = chars.peek(){
             if ch=='*' | ch && '*' | ch == '/'{
@@ -148,7 +148,7 @@ fn eval(expr: &Expr, inputs: &[f64]) -> f64{
                 "sen" => v.sin(), "cos" => v.cos(),
                 "tan" | "tg" => v.tan(), "sqrt" => v.sqrt(),
                 "ln" => v.ln(),
-                _ => panic!("Função desconhecida!");
+                _ => panic!("Função desconhecida!"),
             }
         }
     }
@@ -194,7 +194,7 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
         return Ok(()); //> strings vazias serão puladas
     }
     
-    let u_expr: Expr=match.line.trim().parse(){
+    let u_expr: Expr=match line.trim().parse(){
         Ok(e)=>e;
         Err(err)=>{
             println!("Erro de análise da função!");
