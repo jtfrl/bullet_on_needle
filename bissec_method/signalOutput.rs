@@ -1,7 +1,7 @@
 use std::io::{self};
 use std::collections::VecDeque;
-use micromath::F32Ext; // checar se há um uso mais apriomorado como f64
-use std::str::FromStr;
+//use micromath::F32Ext; 
+//use std::str::FromStr;
 
 // 'derive' dá instrução para o 
 // compilador poder fazer comparações se necessário
@@ -47,7 +47,7 @@ enum Expr{
 
 impl std::str::FromStr for Expr{ 
     type Err=String; 
-    fn from_str(s: &str) -> Result{
+    fn from_str(s: &str) -> Result<Self, Self::Err>{
         let clean = s.replace(' ',"");
         let mut chars=clean.chars().peekable(); //ajuda na iteração da string
         Self::parse_add_sub(&mut chars)
@@ -56,11 +56,11 @@ impl std::str::FromStr for Expr{
 
 impl Expr{
     fn parse_add_sub(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
-        let mut esq=Self::parse_mul_div(chars);
+        let mut esq=Self::parse_mul_div(chars)?;
         while let Some(&ch) = chars.peek(){ //> enquanto houver caracteres para análise
-            if ch=='+' | ch && '+' | ch =='-'{
+            if ch=='+' || ch =='-'{
                 chars.next();
-                let dir=Self::parse_mul_div(chars?);
+                let dir=Self::parse_mul_div(chars)?;
                 let op = if ch == '+' {Op::Add} else {Op::Sub};
                 esq = Expr::BinOp(Box::new(esq), op, Box::new(dir));
             }else{break;}
@@ -71,12 +71,12 @@ impl Expr{
  
 
     fn parse_mul_div(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
-        let mut esq=Self::parse_primary(chars);
+        let mut esq=Self::parse_primary(chars)?; //> ajuda a fazer wrap
         while let Some(&ch) = chars.peek(){
-            if ch=='*' | ch && '*' | ch == '/'{
+            if ch=='*' || ch == '/'{
                 chars.next();
-                let dir=Self::parse_add_sub(chars?);
-                let op = if ch == '*' {Op::Mul} else {op::Div};
+                let dir=Self::parse_add_sub(chars)?;
+                let op = if ch == '*' {Op::Mul} else {Op::Div};
                 esq = Expr::BinOp(Box::new(esq), op, Box::new(dir));
             }
             else{break;}
@@ -128,10 +128,10 @@ fn convertMathF(f: String) -> Result: Expr{
 // em string
 // usamos pair aqui para poder contar com os valores 
 // de cada entrada e de saida
-fn eval(expr: &Expr, inputs: &[f64]) -> f64{
+fn eval(expr: &Expr, x: &f64) -> f64{
     match expr{
         Expr::Number(n)=> *n,
-        Expr::Var => x,
+        Expr::Var => *x,
         Expr::BinOp(l, op, r)=>{
             let (l, r) = (eval(l,x), eval(r, x));
             match op {Op::Add=> l+r,
@@ -157,7 +157,7 @@ fn eval(expr: &Expr, inputs: &[f64]) -> f64{
 fn table_function(expr: Expr, input: &[f64]) -> VecDeque<(f64, f64)>{
     input
         .iter()
-        .map(|&x| (x, eval(expr, x))) //> mapeamento de valores da função
+        .map(|&x| (x, eval(&Expr, x))) //> mapeamento de valores da função
         .collect() 
 }
 
@@ -176,7 +176,7 @@ fn chasePosRoot(points: &[(f64,f64)]){
 
     println!("Quantidade de possibilidades de raízes: {}", intervalos.len());
     for (x1, x2, y1, y2) in intervalos{
-        println(" Intervalo entre x={:.4} (y={:.4}) e x={:.4} (y={:.4})", x1, x2, y1, y2);
+        println!(" Intervalo entre x={:.4} (y={:.4}) e x={:.4} (y={:.4})", x1, x2, y1, y2);
     }
 }
 
@@ -195,7 +195,7 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
     }
     
     let u_expr: Expr=match line.trim().parse(){
-        Ok(e)=>e;
+        Ok(e)=>e,
         Err(err)=>{
             println!("Erro de análise da função!");
             return Ok(());
@@ -204,9 +204,9 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
 
 
     println!("Agora, insira os 10 valores para entrada (separados por espaço) \n");
-    let mut values_for_x: Vec::with_capacity(10);
+    let mut values_for_x=Vec::with_capacity(10);
 
-    while(values_for_x.len()<10){
+    while values_for_x.len()<10 {
         let mut buf=String::new();
         if r.read_line(&mut buf)? == 0 {break;}
 
@@ -223,7 +223,7 @@ fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
         return Ok(());
     }
 
-    let table = table_function(&expr, &values_for_x);
+    let table = table_function(&u_expr, &values_for_x);
 
     println!("\n\n --- TABELA DE VALORES (x, F(x)) ---");
     for(x,y) in &table{
