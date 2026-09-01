@@ -2,7 +2,7 @@ use std::io::{self, Read, Write, BufWriter}
 use std::collections::VecDeque;
 use micromath::F32Ext // checar se há um uso mais apriomorado como f64
 
-enum Token{
+pub enum Token{
     Number(f64).
     Ident(String),
     Plus, Minus, Star, Slash, Chapeu
@@ -10,15 +10,19 @@ enum Token{
     Comma,
 }
 
-enum Expr{
+pub enum Op{
+    Add, Sub, Mul, Div, Pow
+}
+
+pub enum Expr{
     Number(f64),
     Var,
     BinOp(Box<Expr>, Op, Box<Expr>),
     Call(String, Box<Expr>)
 }
 
-// vai retornar a expressão a ser aplicada em tableFunction
-fn convertMathF(f: String){
+// vai retornar a expressão a ser aplicada em eval
+pub fn convertMathF(f: String){
     let fun: Expr = f.trim().parse();
 
     impl std::str::FromStr for Expr{ 
@@ -27,16 +31,16 @@ fn convertMathF(f: String){
     }
 }
 
-// recebe em string a função e calcula n valores de saída
+// recebe em string a função e ajuda na conversão dos operadores
+// em string
 // usamos pair aqui para poder contar com os valores 
 // de cada entrada e de saida
-//fn tableFunction(f: string) -> VecDeque<pair<f64>> {
-fn tableFunction(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
+pub fn eval(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
     match expr{
         Expr::Number(n)=> *n,
         Expr::Var => x,
         Expr::BinOp(l, op, r)=>{
-            let (l, r) = (tableFunction(l,x), tableFunction(r, x));
+            let (l, r) = (eval(l,x), eval(r, x));
             match op {Op::Add=> l+r,
                       Op::Mul=>l*r,
                       Op::Div=>l/r,
@@ -45,7 +49,7 @@ fn tableFunction(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
                       }
         }
         Expr::Call(name, arg)=>{
-            let v = tableFunction(arg, x);
+            let v = eval(arg, x);
             match name.as_str(){
                 "sen" => v.sin(), "cos" => v.cos(),
                 "tan" | "tg" => v.tan(), "sqrt" => v.sqrt(),
@@ -56,15 +60,25 @@ fn tableFunction(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
     }
 }
 
-fn chasePosRoot(points: VecDeque<pair<f32, f32>>){
- bool posRaiz=false;
+pub fn table_function(expr: Expr, input: &[f64]) -> VecDeque<(f64, f64)>{
+    input
+        .iter()
+        .map(|&x|, (x, eval(expr, x)))
+        .collect()
+}
 
+pub fn chasePosRoot(points: &[f64]) -> bool{
+ bool posRaiz=false;
+    points
+        .iter()
+        //TO-DO condicional que irá checar
+        // sinal de positivo ou de negativo aqui
  
 
 
 }
 
-
+//TODO?? precisa de pub aq??
 fn main(){
 
     let mut input = String::new();
