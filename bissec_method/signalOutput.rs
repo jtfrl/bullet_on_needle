@@ -1,4 +1,4 @@
-use std::io::{self, Read, Write, Bufwriter}
+use std::io::{self, Read, Write, BufWriter}
 use std::collections::VecDeque;
 use micromath::F32Ext // checar se há um uso mais apriomorado como f64
 
@@ -20,13 +20,18 @@ enum Expr{
 // vai retornar a expressão a ser aplicada em tableFunction
 fn convertMathF(f: String){
     let fun: Expr = f.trim().parse();
+
+    impl std::str::FromStr for Expr{ 
+        type Err=String; 
+        fn from_str(s: &str) -> Result;
+    }
 }
 
 // recebe em string a função e calcula n valores de saída
 // usamos pair aqui para poder contar com os valores 
 // de cada entrada e de saida
 //fn tableFunction(f: string) -> VecDeque<pair<f64>> {
-fn tableFunction(expr: &Expr, x:f64) -> VecDeque<pair<f64>>{
+fn tableFunction(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
     match expr{
         Expr::Number(n)=> *n,
         Expr::Var => x,
@@ -35,14 +40,15 @@ fn tableFunction(expr: &Expr, x:f64) -> VecDeque<pair<f64>>{
             match op {Op::Add=> l+r,
                       Op::Mul=>l*r,
                       Op::Div=>l/r,
-                      Op::Sub=>l-r
+                      Op::Sub=>l-r,
+                      _ => unreachable!(),
                       }
         }
         Expr::Call(name, arg)=>{
             let v = tableFunction(arg, x);
             match name.as_str(){
                 "sen" => v.sin(), "cos" => v.cos(),
-                "tan" || "tg" => v.tan(), "sqrt" => v.sqrt(),
+                "tan" | "tg" => v.tan(), "sqrt" => v.sqrt(),
                 "ln" => v.ln(),
                 _ => panic!("Função desconhecida!");
             }
