@@ -11,7 +11,7 @@ pub enum Op{
 }
 
 impl Op{
-    fn precedencia(&self){
+    fn precedencia(&self) -> u8{
         match{
             Op::Add | Op::Sub => 1,
             Op::Mul | Op::Div => 2,
@@ -20,7 +20,7 @@ impl Op{
     }
 
     fn right_op(&self) -> bool{
-        matches!(self, Op::pow) // caso o operador 
+        matches!(self, Op::Pow) // caso o operador 
                                 // não for conforme os de 1 e de 2
                                 // manda para 'pow'
     }
@@ -71,7 +71,7 @@ impl Expr{
  
 
     fn parse_mul_div(chars &mut std::iter::Peekable<std::str::Chars>) -> Result<Expr, String>{
-        let mut esq=Self::parse_add_sub(chars);
+        let mut esq=Self::parse_primary(chars);
         while let Some(&ch) = chars.peek(){
             if ch=='*' | ch && '*' | ch == '/'{
                 chars.next();
@@ -118,17 +118,17 @@ impl Expr{
 
 }
 
-// vai retornar a expressão a ser aplicada em eval
+/* // vai retornar a expressão a ser aplicada em eval
 fn convertMathF(f: String) -> Result: Expr{
     let fun: Expr = f.trim().parse();
 
-}
+} */
 
 // recebe em string a função e ajuda na conversão dos operadores
 // em string
 // usamos pair aqui para poder contar com os valores 
 // de cada entrada e de saida
-fn eval(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
+fn eval(expr: &Expr, inputs: &[f64]) -> f64{
     match expr{
         Expr::Number(n)=> *n,
         Expr::Var => x,
@@ -138,6 +138,7 @@ fn eval(expr: &Expr, inputs: &[f64]) -> VecDeque<(f64, f64)>{
                       Op::Mul=>l*r,
                       Op::Div=>l/r,
                       Op::Sub=>l-r,
+                      Op::Pow=>l.powf(r),
                       _ => unreachable!(),
                       }
         }
@@ -169,17 +170,17 @@ fn chasePosRoot(points: &[(f64,f64)]){
         let(x1, y1) = points[i];
         let(x2, y2) = points[i+1];
         if y1==0.0||(y1.signum()!=y2.signum() && y1!=0.0 && y2!=0.0){
-            intervalos.push(x1, x2, y1, y2);
+            intervalos.push((x1, x2, y1, y2));
         }
     }
 
     println!("Quantidade de possibilidades de raízes: {}", intervalos.len());
     for (x1, x2, y1, y2) in intervalos{
-        println(" Intervalo entre x={x1:.4} (y={y1:.4}) e x={x2:.4} (y={y2:.4})");
+        println(" Intervalo entre x={:.4} (y={:.4}) e x={:.4} (y={:.4})", x1, x2, y1, y2);
     }
 }
 
-fn main() -> io.Result<()>{ //> mostrará um resultado a partir da função
+fn main() -> io::Result<()>{ //> mostrará um resultado a partir da função
 
     let stdin=io::stdin();
     let mut r = stdin.lock(); //> leitor de dados
@@ -226,8 +227,8 @@ fn main() -> io.Result<()>{ //> mostrará um resultado a partir da função
 
     println!("\n\n --- TABELA DE VALORES (x, F(x)) ---");
     for(x,y) in &table{
-        //utilizamos formatação de 7 caracteres de saída na tabela
-        //e precisão de 3 casas
+        // utilizamos formatação de 7 caracteres de saída na tabela
+        // e precisão de 3 casas
         println!("f({x:>7.3}) == {y:>10.4}"); 
     }
 
