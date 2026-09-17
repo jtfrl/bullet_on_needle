@@ -1,10 +1,10 @@
-
+
 #include <float.h>
 #include <math.h>
-/* #include <stdlib.h> */
+    /* #include <stdlib.h> */
 
-// TODO: use #define instead!
-const float EPSI = 1e-8;
+    // TODO: use #define instead!
+    const float EPSI = 1e-8;
 
 float numerical_der(float (*f)(float), float x) {
   const float h = x < 0 ? -FLT_MAX : x + (-FLT_MAX);
