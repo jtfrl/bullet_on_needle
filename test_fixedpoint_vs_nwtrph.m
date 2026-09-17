@@ -1,59 +1,70 @@
 clc
-clear %apaga instruçõies anteriores no terminal
+clear
+%f_2=@(x) x.^7+8*x.^6-45*x.^5+56*x.^3-30*x+64;
+f3=@(x) 7*x.^3-49*x.^2+29*x-2
+df3=@(z) 21*z.^2-98*z+29
 
-f=@(x) x.^3-9*x+5;
+f4=@(z3) e.^(2*z3-9*tan(z3/pi))-9*sin(z3)
+df4=@(z4) (2-(9/pi)*(sec(z4/pi)).^2)*e.^(2*z4-9*tan(z4/pi))-9*cos(z4)
 
-function y=raiz(opc, a, b)
-  switch opc
-    case 1
-      y=(a+b)/2;
-    case 2
-      y=(a*f(b)-b*f(a))/(f(b)-f(a));
-    %case 3
-	  %  y=
-    otherwise
-      y=NaN;
-  endswitch
+phix=@(z2) (-7*z2.^3+49*z2.^2+2)/29
+
+
+
+
+function y=raiz(method, f1, f2, x)
+   switch method
+     case 1
+        y=f1(x)
+     case 2
+        y=x-(f1(x)/f2(x))
+   endswitch
 endfunction
 
-a=-4;
-b=-a;
-h=1;
 
-vx=a:h:b;
-vy=f(vx);
+
+i=-10
+j=-5.7
+h=0.05
+
+vx=i:h:j;
+vy=f4(vx);
 
 plot(vx, vy, 'b-', 'LineWidth',2);
 grid on;
 hold on;
 
-tic(); %mostra tempo em segundos para execução
+tic();
 start=tic();
-a=0
-b=1
-prec=10.^-2
+
+i=-7
+j=-5.6 %valores dentro do range a buscar a raiz
+
 k=0;
-metodo=2 % 1 = bisseccao | 2 = falsa posicao
+prec=10.^-3;
+method=2
 
-x=raiz(metodo, f, a, b);
-%x=(a+b)/2;
+xnew=raiz(method, f4, df4, i);
+hist_x=[i, xnew]; % histórico de valores para encontrar o zero da função
+hist_y=[f4(i), f4(xnew)];
+printf("k=%d, x=%.5f, f(x)=%g \n\n", k, xnew, f4(xnew));
 
-printf("k=%d, x=%.5f, f(x)=%g\n", k, x, f(x));
-
-while(abs(f(x))>prec) %enquanto for maior que a precisao
-  if(f(a)*f(x) < 0)
-    b=x;
-  else
-    a=x;
-  endif
+while(abs(f4(xnew))>prec) % verificamos a precisão para o novo x
+  x=xnew;
+  xnew=raiz(method, f4, df4, x);
   k++;
-  x=(a+b)/2;
-  printf("k=%d, x=%.5f, f(x)=%g\n", k, x, f(x));
+  hist_x(end+1)=xnew;
+  hist_y(end+1)=f4(xnew);
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, xnew, f4(xnew));
 endwhile
 
-plot(x,f(x),'o', 'Color', 'r', 'MarkerSize', 10);
+x=xnew;
+
+plot(hist_x, hist_y, 'm--o', 'MarkerSize', 6, 'LineWidth', 1);
+plot(x,f4(x),'o', 'Color', 'r', 'MarkerSize', 10, 'LineWidth', 1.3);
 hold off;
 
-elapsed_time = toc(start);
-printf("Execution time: %.4f seconds\n", elapsed_time);
-%print(toc());
+#{
+
+
+#}
