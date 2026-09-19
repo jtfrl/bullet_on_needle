@@ -10,7 +10,6 @@
 #define frm (float)RAND_MAX
 const float EPSI = 1e-8;
 
-
 float numerical_der(float (*f)(float), float x);
 bool signal_f(float a, float b, float (*f)(float));
 float method0(float a, float b, float (*f)(float));
