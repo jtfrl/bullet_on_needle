@@ -37,7 +37,7 @@ float* obter_val_f(float (*f)(float), size_t tam, float* vx){
 
 // será útil para ver em entre que valores estaria uma raiz da função
 void show_val_f(float* vy, float* vx, int pos, int tam){
-    char formulas[4]={"(2*pow(x,4)+4*pow(x,3)+3*pow(x,2)-10*x-15)",
+    char formulas[4][100]={"(2*pow(x,4)+4*pow(x,3)+3*pow(x,2)-10*x-15)",
             "(pow(x,5)-2*pow(x,4)-9*pow(x,3)+22*pow(x,2)+4*x-24)",
             "(5*pow(x,3)+pow(x,2)-pow(e, (1-2*x))+cos(x)+20)",
             "(sin(x)*x+4)"};
