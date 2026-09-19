@@ -35,7 +35,9 @@ bool signal_f(float a, float b, float (*f)(float)) {
 float method0(float a, float b, float (*f)(float)) {
   float x = (b + a) / 2;
   float fx = f(x);
-
+  int k=0;
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+  k++;
   // CASO JA CONVERGIU
   if (fabs(fx) < EPSI) {
     return x;
@@ -47,6 +49,8 @@ float method0(float a, float b, float (*f)(float)) {
   } else {
     return method0(x, b, f); // a <- x
   }
+
+
 }
 
 float sec(float a, float b, float (*f)(float)) {
@@ -55,6 +59,10 @@ float sec(float a, float b, float (*f)(float)) {
 
 float method1(float a, float b, float (*f)(float)) {
   float x = sec(a, b, f);
+
+  int k=0;
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+  k++;
   // CASO JA CONVERGIU
   if (fabs(f(x)) < EPSI) {
     return x;
@@ -74,6 +82,10 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   float x=(a+b)/2;
   bool in_inter=true;
   float uniform=b-a; //deixamos o intervalo em dist. uniforme
+
+  int k=0;
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
+
   while(abs(f_or(x)>EPSI)){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
@@ -85,6 +97,10 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
       x=a+(float)rand()/frm/(uniform);
     }
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
+    
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
+    k++;
+  
   }
   return x;
 }
@@ -92,10 +108,16 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
 
 float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
   // controle com numerical_der
+ 
   float x=(a+b)/2; 
+
+  int k=0;
+  
   while(abs(f_or(x))>EPSI){
-    if(der_f(x)!=0 && numerical_der(f_or, x)!=0) 
-      x=x-(f_or(x))/(der_f(x));
+    if(der_f(x)!=0 && numerical_der(f_or, x)!=0) x=x-(f_or(x))/(der_f(x));
+
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
+    k++;
   }
 
   return x;

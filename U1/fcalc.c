@@ -1,4 +1,5 @@
 #include "fcalc.h"
+#include "zeroes_f.h"
 
 float* gerar_interval(float a, float b, float step, int *out_size){
     // out_size avisa que deve parar se chegar em zero
@@ -44,6 +45,31 @@ void show_val_f(float* vy, float* vx, int pos, int tam){
 
     printf("\n\n :::: VALORES DE %s ::::", formulas[pos]);
     for(int i=0; i<tam; i++){
-        printf("\nf(%.2f)=%.2f", vx[i], vy[i]);
+        printf("\nf(%.2f) = %.2f", vx[i], vy[i]);
     }
+
+    printf("\n\n");
+}
+
+float run(const int op, float a, 
+        float b, 
+        float (*f)(float), 
+        float (*phix)(float),
+        float (*derf)(float)){
+
+    float x_root=0.0f;
+    if(op==0){
+        x_root=method0(a,b,f);
+    }
+    else if(op==1){
+        x_root=method1(a,b,f);
+    }
+    /*
+    else if com method 2: a impl (falta o phix das funções na main)
+    */
+   else{
+        x_root=method3(a, b, f, derf);
+   }
+
+   return x_root;
 }

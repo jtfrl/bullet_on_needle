@@ -8,7 +8,7 @@
 #include <time.h>
 
 #define frm (float)RAND_MAX
-extern const float EPSI = 1e-8;
+extern const float EPSI; // usamos um extern para evitar redefinições
 
 float numerical_der(float (*f)(float), float x);
 bool signal_f(float a, float b, float (*f)(float));
