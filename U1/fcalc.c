@@ -1,6 +1,7 @@
 #include "fcalc.h"
 
 float* gerar_interval(float a, float b, float step, int *out_size){
+    // out_size avisa que deve parar se chegar em zero
     if(step == 0.0f || (a<b && step<0.0f) || (a>b && step<0.0f)){
         *out_size=0;
         return NULL;

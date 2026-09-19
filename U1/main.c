@@ -30,12 +30,12 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
-    int size;
+    int size=0;
     float a=atof(argv[1]);
     float b=atof(argv[2]);
     float h=atof(argv[3]);
 
-    float *u_vx=gerar_interval(a,b,h,size);
+    float *u_vx=gerar_interval(a,b,h,&size);
     float *u_vy=obter_val_f(f1, size, u_vx);
     show_val_f(u_vy, u_vx, f1, size);
 
