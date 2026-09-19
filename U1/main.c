@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
 
     float *u_vx=gerar_interval(a,b,h,&size);
     float *u_vy=obter_val_f(f1, size, u_vx);
-    show_val_f(u_vy, u_vx, f1, size);
+    show_val_f(u_vy, u_vx, 0, size);
 
 /*
     // === funções a serem testadas (desc. da atividade) === 
