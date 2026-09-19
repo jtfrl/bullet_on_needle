@@ -1,15 +1,14 @@
-#include <float.h>
+/* #include <float.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-/* ___ METODOS: ____ */
+#include <stdlib.h> */
+
+#include "zeroes_f.h"
+/* ___ MÉTODOS: ____ */
 /* 0 = BISSECAÇÃO
    1 = FALSA POS.
    2 = PONTO FIXO 
    3 = NEWTON-RAPHSON*/
-
-#define frm (float)RAND_MAX
-const float EPSI = 1e-8;
 
 float numerical_der(float (*f)(float), float x) {
   const float h = x < 0 ? -FLT_MAX : x + (-FLT_MAX);
