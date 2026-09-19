@@ -10,6 +10,9 @@
    2 = PONTO FIXO 
    3 = NEWTON-RAPHSON*/
 
+
+const float EPSI = 1e-8;
+
 float numerical_der(float (*f)(float), float x) {
   const float h = x < 0 ? -FLT_MAX : x + (-FLT_MAX);
   return ((f(x + h) - f(x)) / h);
