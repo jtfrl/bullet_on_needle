@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     int _op=0;
 
     while(rnn){
-        printf("::: DESEJA VERIFICAR ZEROS DE FUNÇÃO? ::: \n ");
+        printf("\n\n::: DESEJA VERIFICAR ZEROS DE FUNÇÃO? ::: \n ");
         printf("[1] - SIM | [2] - NÃO\n\n");
         
         fgets(op, sizeof(op), stdin);
@@ -84,7 +84,9 @@ int main(int argc, char* argv[]){
             float u_b=0;
             scanf("%f %f", &u_a, &u_b);
 
-            run(f_op, a, b, f1, df1, NULL);
+
+            float x_root=run(f_op, a, b, f1, df1, NULL);
+            printf("\n\nraiz da função: %.5f", x_root);
             break;
         }
         case 2:{
@@ -92,8 +94,9 @@ int main(int argc, char* argv[]){
             printf("Saindo do programa...\n");
             break;
         }
-        default:
+        default:{
             break;
+        }
         }
     }
 

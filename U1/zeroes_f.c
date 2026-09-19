@@ -86,7 +86,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
-  while(abs(f_or(x)>EPSI)){
+  while(fabs(f_or(x)>EPSI)){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
                               //> e obter o valor da raiz
@@ -112,9 +112,12 @@ float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
   float x=(a+b)/2; 
 
   int k=0;
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   
-  while(abs(f_or(x))>EPSI){
-    if(der_f(x)!=0 && numerical_der(f_or, x)!=0) x=x-(f_or(x))/(der_f(x));
+  while(fabs(f_or(x))>EPSI){
+    if(der_f(x)!=0 && numerical_der(f_or, x)!=0){
+      x=x-(f_or(x))/(der_f(x));
+    }
 
     printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
     k++;
