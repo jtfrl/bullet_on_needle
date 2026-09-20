@@ -62,8 +62,6 @@ float sec(float a, float b, float (*f)(float)) {
 
 float method1(float a, float b, float (*f)(float), int k) {
   float x = sec(a, b, f);
-
-  int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
   k++;
   // CASO JA CONVERGIU
