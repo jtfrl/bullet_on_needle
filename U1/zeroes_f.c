@@ -32,22 +32,25 @@ bool signal_f(float a, float b, float (*f)(float)) {
   return true;
 }
 
-float method0(float a, float b, float (*f)(float)) {
-  float x = (b + a) / 2;
-  float fx = f(x);
-  int k=0;
+float method0(float a, float b, float (*f)(float), int k) {
+  float x = (b + a) / 2.0f;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
-  k++;
   // CASO JA CONVERGIU
-  if (fabs(fx) < EPSI) {
+  if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k++, x, f(x));
     return x;
   }
 
+  // CASO EM QUE NÃO É MAIS POSSÍVEL REFINAR
+  if(a==x || b==x) return x; 
   // SE O SINAL MUDOU
-  if (f(a) * f(x) < 0) {
-    return method0(a, x, f); // b <- x
-  } else {
-    return method0(x, b, f); // a <- x
+  if (f(a) * f(x) < 0.0f) {
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+    return method0(a, x, f, k+1); // b <- x
+  } 
+  else {
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+    return method0(x, b, f, k+1); // a <- x
   }
 
 
@@ -57,7 +60,7 @@ float sec(float a, float b, float (*f)(float)) {
   return ((a * f(b) - b * f(a)) / f(b) - f(a));
 }
 
-float method1(float a, float b, float (*f)(float)) {
+float method1(float a, float b, float (*f)(float), int k) {
   float x = sec(a, b, f);
 
   int k=0;
@@ -70,9 +73,9 @@ float method1(float a, float b, float (*f)(float)) {
 
   // SE O SINAL MUDOU
   if (f(a) * f(x) < 0) {
-    return method0(a, x, f); // b <- x
+    return method0(a, x, f, k+1); // b <- x
   } else {
-    return method0(x, b, f); // a <- x
+    return method0(x, b, f, k+1); // a <- x
   }
 }
 

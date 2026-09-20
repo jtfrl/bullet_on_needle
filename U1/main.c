@@ -11,7 +11,7 @@
 #define F_4(x) (sin(x)*x+4) */
 
 //#define DF_1(x) (8*pow(x,3)+12*pow(x,2)+6*x-10)
-#define DF_2(x) (5*pow(x,4)-8*pow(x,3)-27*pow(x,2)+44*x+4)
+//#define DF_2(x) (5*pow(x,4)-8*pow(x,3)-27*pow(x,2)+44*x+4)
 /* #define DF_3(x) (15*pow(x,2)+2*x+2*(pow(elr,1-2*x))-sin(x))
 #define DF_4(x) (cos(x)*x+sin(x)) */
 
@@ -21,7 +21,7 @@ static float f2(float x) { return F_2(x);}
 /* static float f3(float x) { return F_3(x);}
 static float f4(float x) { return F_4(x);} */
 //static float df1(float x) { return DF_1(x);}
-static float df2(float x) { return DF_2(x);}
+//static float df2(float x) { return DF_2(x);}
 /* static float df3(float x) { return DF_3(x);}
 static float df4(float x) { return DF_4(x);} 
  */
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
     float *u_vx4=gerar_interval(a,b,h,&size);
     float *u_vy4=obter_val_f(f4, size, u_vx4); */
 
-    show_val_f(u_vy2, u_vx2, 0, size);
+    show_val_f(u_vy2, u_vx2, 1, size);
 
     bool rnn=true;
     char op[10];
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
             scanf("%f %f", &u_a, &u_b);
 
 
-            float x_root=run(f_op, a, b, f2, NULL, df2);
+            float x_root=run(f_op, a, b, f2, NULL, NULL);
             printf("\n\nraiz da função: %.5f", x_root);
             break;
         }

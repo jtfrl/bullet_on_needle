@@ -12,9 +12,9 @@ extern const float EPSI; // usamos um extern para evitar redefinições
 
 float numerical_der(float (*f)(float), float x);
 bool signal_f(float a, float b, float (*f)(float));
-float method0(float a, float b, float (*f)(float));
+float method0(float a, float b, float (*f)(float), int k);
 float sec(float a, float b, float (*f)(float)); //> função comum ao metodo ao metodo 1 e ao 4
-float method1(float a, float b, float (*f)(float));
+float method1(float a, float b, float (*f)(float), int k);
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float));
 float method3(float a, float b, float(*f_or)(float), float(*der_f)(float));
 //float method4 (TODO secante)
