@@ -37,7 +37,6 @@ float method0(float a, float b, float (*f)(float), int k) {
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
   // CASO JA CONVERGIU
   if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k++, x, f(x));
     return x;
   }
 
@@ -45,14 +44,11 @@ float method0(float a, float b, float (*f)(float), int k) {
   if(a==x || b==x) return x; 
   // SE O SINAL MUDOU
   if (f(a) * f(x) < 0.0f) {
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
     return method0(a, x, f, k+1); // b <- x
   } 
   else {
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
     return method0(x, b, f, k+1); // a <- x
   }
-
 
 }
 
@@ -63,12 +59,10 @@ float sec(float a, float b, float (*f)(float)) {
 float method1(float a, float b, float (*f)(float), int k) {
   float x = sec(a, b, f);
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
-  k++;
   // CASO JA CONVERGIU
-  if (fabs(f(x)) < EPSI) {
+  if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
     return x;
   }
-
   // SE O SINAL MUDOU
   if (f(a) * f(x) < 0) {
     return method0(a, x, f, k+1); // b <- x
