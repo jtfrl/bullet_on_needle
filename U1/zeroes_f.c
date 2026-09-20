@@ -11,7 +11,7 @@
    3 = NEWTON-RAPHSON*/
 
 
-const float EPSI = 1e-8;
+const float EPSI = 1e-5;
 
 float numerical_der(float (*f)(float), float x) {
   const float h = x < 0 ? -FLT_MAX : x + (-FLT_MAX);
@@ -98,8 +98,8 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     }
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
     
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
     k++;
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   
   }
   return x;
@@ -119,8 +119,8 @@ float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
       x=x-(f_or(x))/(der_f(x));
     }
 
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
     k++;
+    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   }
 
   return x;
