@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
             scanf("%f %f", &u_a, &u_b);
 
 
-            float x_root=run(f_op, a, b, f2, NULL, NULL);
+            float x_root=run(f_op, a, b, f2, NULL, NULL, 0);
             printf("\n\nraiz da função: %.5f", x_root);
             break;
         }

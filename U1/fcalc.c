@@ -55,14 +55,14 @@ float run(const int op, float a,
         float b, 
         float (*f)(float), 
         float (*phix)(float),
-        float (*derf)(float)){
+        float (*derf)(float), int k){
 
     float x_root=0.0f;
     if(op==0){
-        x_root=method0(a,b,f);
+        x_root=method0(a,b,f,k);
     }
     else if(op==1){
-        x_root=method1(a,b,f);
+        x_root=method1(a,b,f,k);
     }
     /*
     else if com method 2: a impl (falta o phix das funções na main)

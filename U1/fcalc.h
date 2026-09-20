@@ -15,7 +15,8 @@ float run(const int op,
         float b, 
         float (*f)(float), 
         float (*phix)(float),
-        float (*derf)(float));
+        float (*derf)(float), 
+        int k);
 
 
 #endif //FCALC
