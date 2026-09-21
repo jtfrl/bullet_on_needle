@@ -33,6 +33,15 @@ static float phix_3(float x) {
 static float phix_4(float x) { return (-4/sin(x));}
 
 
+typedef struct {
+    const char *nome;
+    double (*f)(double);
+    double (*df)(double);
+    double (*phi)(double);
+    double a, b, h;
+} MathCalc;
+
+
 
 int main(int argc, char* argv[]){
 
@@ -93,8 +102,10 @@ int main(int argc, char* argv[]){
             float u_b=0;
             scanf("%f %f", &u_a, &u_b);
             while (getchar() != '\n'); 
-
-
+            float x_root=0;
+            bool use_of_phi= (f_op==2) ? x_root=run(f_op, a, b, f2, phix_2, NULL, 0): (goto der_use);
+            der_use: 
+                bool use_of_der= (f_op==3)
             float x_root=run(f_op, a, b, f2, NULL, NULL, 0);
             printf("\n\nraiz da função: %.5f", x_root);
             break;

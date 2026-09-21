@@ -20,7 +20,10 @@ float method1(float a, float b, float (*f)(float), int k);
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float));
 float method3(float a, float b, float(*f_or)(float), float(*der_f)(float));
 float method4(float a, float b, float (*f)(float));          /* Secante         */
-float monitor_t(time_t* start, time_t* end);
+double method5(double a, double b,
+                      double (*f)(double), double (*df)(double));//híbrido
+float monitor_t(clock_t start, clock_t end);
+
 
 //TODO em 2 e 3: usar metodo de proximidade ao centro do intervalo
 

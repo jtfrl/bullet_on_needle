@@ -9,9 +9,8 @@
 
 const float EPSI = 1e-5;
 
-float monitor_t(time_t* start, time_t* end){
-  float s=(float)(end-start)/CLOCKS_PER_SEC;
-  return s;
+float monitor_t(clock_t start, clock_t end){
+  return ((double)(end-start))/CLOCKS_PER_SEC;
 }
 
 float numerical_der(float (*f)(float), float x) {
@@ -37,20 +36,19 @@ float method0(float a, float b, float (*f)(float), int k) {
   float x = (b + a) / 2.0f;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
 
-  time_t start, end;
 
-  time (&start);
+  clock_t start = clock();
   // CASO JA CONVERGIU
   if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     return x;
   }
 
   // CASO EM QUE NÃO É MAIS POSSÍVEL REFINAR
   if(a==x || b==x){
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     return x; 
   }
 
@@ -63,8 +61,8 @@ float method0(float a, float b, float (*f)(float), int k) {
   }
 
   if(k>MAX_ITER){
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     printf("\n\nERRO! Máximo de iterações atingidas");
     return x;
   }
@@ -83,13 +81,11 @@ float method1(float a, float b, float (*f)(float), int k) {
   float x = sec(a, b, f);
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
 
-  time_t start, end;
-
-  time (&start);
+  clock_t start = clock();
   // CASO JA CONVERGIU
   if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     return x;
   }
   // SE O SINAL MUDOU
@@ -100,8 +96,8 @@ float method1(float a, float b, float (*f)(float), int k) {
   }
 
   if(k>MAX_ITER){
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     printf("\n\nERRO! Máximo de iterações atingidas");
     return x;
   }
@@ -117,9 +113,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
-  time_t start, end;
-
-  time (&start);
+  clock_t start = clock();
   while(fabs(f_or(x)>EPSI)){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
@@ -133,8 +127,8 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
  
     if(phix(x)-x<EPSI){
-      time (&end);
-      printf("\n\n execução em: %.5f", monitor_t(start, end));
+      clock_t end = clock();
+      printf("\n\n execução em: %.5f s", monitor_t(start, end));
       break;    
     }
     k++;
@@ -142,14 +136,14 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   
   }
 
-  time (&end);
-  printf("\n\n execução em: %.5f", monitor_t(start, end));
+  clock_t end = clock();
+  printf("\n\n execução em: %.5f s", monitor_t(start, end));
   return x;
 
 
   if(k>MAX_ITER){
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     printf("\n\nERRO! Máximo de iterações atingidas");
     return x;
   }
@@ -161,10 +155,8 @@ float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
 
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
-  
-  time_t start, end;
 
-  time (&start);
+  clock_t start = clock();
   while(fabs(f_or(x))>EPSI){
     if(der_f(x)!=0 && numerical_der(f_or, x)!=0){
       x=x-(f_or(x))/(der_f(x));
@@ -174,15 +166,15 @@ float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
     printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   }
 
-  time (&end);
-  printf("\n\n execução em: %.5f", monitor_t(start, end));
+  clock_t end = clock();
+  printf("\n\n execução em: %.5f s", monitor_t(start, end));
 
   return x;
 
 
   if(k>MAX_ITER){
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     printf("\n\n ERRO! Máximo de iterações atingidas");
     return x;
   }
@@ -194,9 +186,7 @@ float method4(float a, float b, float (*f)(float)) {
     float x_ant = a, x = b;
     float f_ant = f(x_ant), fx = f(x);
 
-    time_t start, end;
-
-    time (&start);
+    clock_t start = clock();
     printf("k=0, x=%.5f, f(x)=%g\n", x_ant, f_ant);
     printf("k=1, x=%.5f, f(x)=%g\n", x, fx);
 
@@ -210,8 +200,8 @@ float method4(float a, float b, float (*f)(float)) {
         printf("k=%d, x=%.5f, f(x)=%g\n", k, x_new, f(x_new));
 
         if (fabs(f(x_new)) < EPSI){
-            time (&end);
-            printf("\n\n execução em: %.5f", monitor_t(start, end));
+            clock_t end = clock();
+            printf("\n\n execução em: %.5f s", monitor_t(start, end));
             return x_new;
         }
         
@@ -221,7 +211,32 @@ float method4(float a, float b, float (*f)(float)) {
         fx = f(x_new);
     }
 
-    time (&end);
-    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
     return x;
+}
+
+double method5(double a, double b,
+                      double (*f)(double), double (*df)(double)) { //híbrido
+    int k = 0;
+    double x = (a + b) / 2.0;
+    double erro = (b - a) / 2.0;
+
+    printf("\n=== ESTRATEGIA HIBRIDA: Bisseccao + Newton ===\n");
+    clock_t start=clock();
+    /* Fase 1: Bissecção com tolerância 1e-2 (apenas para aquecer) */
+    while (erro > 1e-2 && k < 15) {
+        if (f(a) * f(x) < 0) b = x;
+        else                 a = x;
+        x = (a + b) / 2.0;
+        erro = (b - a) / 2.0;
+        k++;
+    }
+    printf("Fase 1 (Bisseccao): %d iteracoes, chute x0 = %.10f\n", k, x);
+
+    /* Fase 2: Newton a partir do chute obtido */
+    clock_t end = clock();
+    printf("\n\n execução em: %.5f s", monitor_t(start, end));
+    return method3(x - 0.5, x + 0.5, f, df);
+
 }

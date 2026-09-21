@@ -19,4 +19,5 @@ float run(const int op,
         int k);
 
 
+
 #endif //FCALC
