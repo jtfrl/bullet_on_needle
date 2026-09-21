@@ -1,17 +1,18 @@
-/* #include <float.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h> */
-
 #include "zeroes_f.h"
 /* ___ MÉTODOS: ____ */
 /* 0 = BISSECAÇÃO
    1 = FALSA POS.
    2 = PONTO FIXO 
-   3 = NEWTON-RAPHSON*/
+   3 = NEWTON-RAPHSON
+   4 = SECANTE */
 
 
 const float EPSI = 1e-5;
+
+float monitor_t(time_t* start, time_t* end){
+  float s=(float)(end-start)/CLOCKS_PER_SEC;
+  return s;
+}
 
 float numerical_der(float (*f)(float), float x) {
   const float h = x < 0 ? -FLT_MAX : x + (-FLT_MAX);
@@ -35,13 +36,24 @@ bool signal_f(float a, float b, float (*f)(float)) {
 float method0(float a, float b, float (*f)(float), int k) {
   float x = (b + a) / 2.0f;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+
+  time_t start, end;
+
+  time (&start);
   // CASO JA CONVERGIU
   if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
     return x;
   }
 
   // CASO EM QUE NÃO É MAIS POSSÍVEL REFINAR
-  if(a==x || b==x) return x; 
+  if(a==x || b==x){
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    return x; 
+  }
+
   // SE O SINAL MUDOU
   if (f(a) * f(x) < 0.0f) {
     return method0(a, x, f, k+1); // b <- x
@@ -50,8 +62,19 @@ float method0(float a, float b, float (*f)(float), int k) {
     return method0(x, b, f, k+1); // a <- x
   }
 
+  if(k>MAX_ITER){
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    printf("\n\nERRO! Máximo de iterações atingidas");
+    return x;
+  }
+
 }
 
+
+/* ============================================================
+ *  FÓRMULA DA FALSA POSIÇÃO
+ * ============================================================ */
 float sec(float a, float b, float (*f)(float)) {
   return ((a * f(b) - b * f(a)) / f(b) - f(a));
 }
@@ -59,8 +82,14 @@ float sec(float a, float b, float (*f)(float)) {
 float method1(float a, float b, float (*f)(float), int k) {
   float x = sec(a, b, f);
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f(x));
+
+  time_t start, end;
+
+  time (&start);
   // CASO JA CONVERGIU
   if (fabs(b-a)<EPSI || fabs(f(x)) < EPSI) {
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
     return x;
   }
   // SE O SINAL MUDOU
@@ -68,6 +97,13 @@ float method1(float a, float b, float (*f)(float), int k) {
     return method0(a, x, f, k+1); // b <- x
   } else {
     return method0(x, b, f, k+1); // a <- x
+  }
+
+  if(k>MAX_ITER){
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    printf("\n\nERRO! Máximo de iterações atingidas");
+    return x;
   }
 }
 
@@ -81,6 +117,9 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
+  time_t start, end;
+
+  time (&start);
   while(fabs(f_or(x)>EPSI)){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
@@ -92,23 +131,40 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
       x=a+(float)rand()/frm/(uniform);
     }
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
-    
+ 
+    if(phix(x)-x<EPSI){
+      time (&end);
+      printf("\n\n execução em: %.5f", monitor_t(start, end));
+      break;    
+    }
     k++;
     printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   
   }
+
+  time (&end);
+  printf("\n\n execução em: %.5f", monitor_t(start, end));
   return x;
+
+
+  if(k>MAX_ITER){
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    printf("\n\nERRO! Máximo de iterações atingidas");
+    return x;
+  }
 }
 
 
-float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
-  // controle com numerical_der
- 
+float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){ 
   float x=(a+b)/2; 
 
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   
+  time_t start, end;
+
+  time (&start);
   while(fabs(f_or(x))>EPSI){
     if(der_f(x)!=0 && numerical_der(f_or, x)!=0){
       x=x-(f_or(x))/(der_f(x));
@@ -118,5 +174,54 @@ float method3(float a, float b, float(*f_or)(float), float(*der_f)(float)){
     printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   }
 
+  time (&end);
+  printf("\n\n execução em: %.5f", monitor_t(start, end));
+
   return x;
+
+
+  if(k>MAX_ITER){
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    printf("\n\n ERRO! Máximo de iterações atingidas");
+    return x;
+  }
+}
+
+
+
+float method4(float a, float b, float (*f)(float)) {
+    float x_ant = a, x = b;
+    float f_ant = f(x_ant), fx = f(x);
+
+    time_t start, end;
+
+    time (&start);
+    printf("k=0, x=%.5f, f(x)=%g\n", x_ant, f_ant);
+    printf("k=1, x=%.5f, f(x)=%g\n", x, fx);
+
+    for (int k = 2; k < MAX_ITER; k++) {
+        if (fabsf(fx - f_ant) < 1e-15f) {
+            printf("Divisao por zero na secante, parando.\n");
+            break;
+        }
+        //float x_new = x - fx * (x - x_ant) / (fx - f_ant);
+        float x_new=sec(x_ant, x, f);
+        printf("k=%d, x=%.5f, f(x)=%g\n", k, x_new, f(x_new));
+
+        if (fabs(f(x_new)) < EPSI){
+            time (&end);
+            printf("\n\n execução em: %.5f", monitor_t(start, end));
+            return x_new;
+        }
+        
+        x_ant = x;  
+        f_ant = fx;
+        x = x_new;  
+        fx = f(x_new);
+    }
+
+    time (&end);
+    printf("\n\n execução em: %.5f", monitor_t(start, end));
+    return x;
 }

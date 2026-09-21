@@ -9,6 +9,8 @@
 
 #define frm (float)RAND_MAX
 extern const float EPSI; // usamos um extern para evitar redefinições
+#define MAX_ITER 100      /* limite de iterações para evitar loop infinito */
+
 
 float numerical_der(float (*f)(float), float x);
 bool signal_f(float a, float b, float (*f)(float));
@@ -17,8 +19,8 @@ float sec(float a, float b, float (*f)(float)); //> função comum ao metodo ao 
 float method1(float a, float b, float (*f)(float), int k);
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float));
 float method3(float a, float b, float(*f_or)(float), float(*der_f)(float));
-//float method4 (TODO secante)
-
+float method4(float a, float b, float (*f)(float));          /* Secante         */
+float monitor_t(time_t* start, time_t* end);
 
 //TODO em 2 e 3: usar metodo de proximidade ao centro do intervalo
 

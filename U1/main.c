@@ -3,28 +3,37 @@
 
 #define elr M_E
 
-// funções comentadas para não comprometer compilação
+/* ==== FÓRMULAS ==== */
+static float f1(float x)  { return 2*pow(x,4) + 4*pow(x,3) + 3*pow(x,2) - 10*x - 15; }
+static float f2(float x)  { return pow(x,5) - 2*pow(x,4) - 9*pow(x,3) + 22*pow(x,2) + 4*x - 24; }
+static float f3(float x)  { return 5*pow(x,3)+pow(x,2)-pow(elr, (1-2*x))+cos(x)+20; }
+static float f4(float x)  { return x*sin(x) + 4; }
 
-//#define F_1(x) (2*pow(x,4)+4*pow(x,3)+3*pow(x,2)-10*x-15)
-#define F_2(x) (pow(x,5)-2*pow(x,4)-9*pow(x,3)+22*pow(x,2)+4*x-24)
-/* #define F_3(x) (5*pow(x,3)+pow(x,2)-pow(elr, (1-2*x))+cos(x)+20)
-#define F_4(x) (sin(x)*x+4) */
 
-//#define DF_1(x) (8*pow(x,3)+12*pow(x,2)+6*x-10)
-//#define DF_2(x) (5*pow(x,4)-8*pow(x,3)-27*pow(x,2)+44*x+4)
-/* #define DF_3(x) (15*pow(x,2)+2*x+2*(pow(elr,1-2*x))-sin(x))
-#define DF_4(x) (cos(x)*x+sin(x)) */
+/* ==== DERIVADAS ==== */
+/* (a) f1(x) = 2x^4 + 4x^3 + 3x^2 - 10x - 15   em [0, 3], h = 0.6 */
+static float df1(float x) { return 8*pow(x,3) + 12*pow(x,2) + 6*x - 10; }
 
-// draell, teria como simplificar essa ruma de linha??
-//static float f1(float x) { return F_1(x);}
-static float f2(float x) { return F_2(x);}
-/* static float f3(float x) { return F_3(x);}
-static float f4(float x) { return F_4(x);} */
-//static float df1(float x) { return DF_1(x);}
-//static float df2(float x) { return DF_2(x);}
-/* static float df3(float x) { return DF_3(x);}
-static float df4(float x) { return DF_4(x);} 
- */
+/* (b) f2(x) = x^5 - 2x^4 - 9x^3 + 22x^2 + 4x - 24  em [0, 5], h = 0.7 */
+static float df2(float x) { return 5*pow(x,4) - 8*pow(x,3) - 27*pow(x,2) + 44*x + 4; }
+
+/* (c) f3(x) = 5x^3 + x^2 - e^(1-2x) + cos(x) + 20   em [-5, 5], h = 0.5 */
+static float df3(float x) { return 15*pow(x,2)+2*x+2*(pow(elr,1-2*x))-sin(x);}
+
+/* (d) f4(x) = x*sen(x) + 4   em [1, 5], h = 0.5 */
+static float df4(float x) { return  (cos(x)*x+sin(x)); }
+
+/* ==== PHI ==== */
+static float phix_1(float x) { return (-2*pow(x,4)-4*pow(x,3)-3*pow(x,2)+15)/(-10.0);}
+static float phix_2(float x) { return (-pow(x,5)+2*pow(x,4)+9*pow(x,3)-22*pow(x,2)+24)/(-4.0);}
+static float phix_3(float x) { 
+    if(x<=0) return (-1e7-1)/(-2.0); //optamos trabalhar com um negativo muito "alto", caso x negativo
+    return (log(5*pow(x,3)+pow(x,2)+cos(x)+20)-1)/(-2.0);
+}
+static float phix_4(float x) { return (-4/sin(x));}
+
+
+
 int main(int argc, char* argv[]){
 
     if(argc<4){
@@ -72,7 +81,7 @@ int main(int argc, char* argv[]){
         {
         case 1:{
             printf("Opções de métodos:\n\n");
-            printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n\n");
+            printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n 4 = SECANTE \n\n");
             char op[10];
             int f_op=0;
 
@@ -83,6 +92,7 @@ int main(int argc, char* argv[]){
             float u_a=0;
             float u_b=0;
             scanf("%f %f", &u_a, &u_b);
+            while (getchar() != '\n'); 
 
 
             float x_root=run(f_op, a, b, f2, NULL, NULL, 0);
@@ -100,7 +110,5 @@ int main(int argc, char* argv[]){
         }
     }
 
-    
-    //free aqui
     return 0;
 }

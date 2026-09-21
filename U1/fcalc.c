@@ -64,12 +64,13 @@ float run(const int op, float a,
     else if(op==1){
         x_root=method1(a,b,f,k);
     }
-    /*
-    else if com method 2: a impl (falta o phix das funções na main)
-    */
-   else{
+    else if(op==2){
+        x_root=method2(a,b,f,phix);
+    }
+    else if (op==3){
         x_root=method3(a, b, f, derf);
-   }
-
+    }else{
+        x_root=method4(a,b,f);
+    }
    return x_root;
 }
