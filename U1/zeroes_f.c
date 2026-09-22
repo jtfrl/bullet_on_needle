@@ -136,8 +136,9 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
 
   if(k>MAX_ITER){
     printf("\n\nERRO! Máximo de iterações atingidas");
-    return x;
   }
+  
+  return x;
 }
 
 
