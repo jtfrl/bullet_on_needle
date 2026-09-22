@@ -70,20 +70,6 @@ int main(int argc, char* argv[]){
     calcf.b=b;
     calcf.h=h;
 
-
-   /*  float *u_vx1=gerar_interval(a,b,h,&size);
-    float *u_vy1=obter_val_f(f1, size, u_vx1); */
-
-/*     float *u_vx2=gerar_interval(a,b,h,&size);
-    float *u_vy2=obter_val_f(f2, size, u_vx2); */
-
-    /*
-    float *u_vx3=gerar_interval(a,b,h,&size);
-    float *u_vy3=obter_val_f(f3, size, u_vx3);
-
-    float *u_vx4=gerar_interval(a,b,h,&size);
-    float *u_vy4=obter_val_f(f4, size, u_vx4); */
-
     int size=0;
     float* u_vx=gerar_interval(calcf.a, calcf.b, calcf.h, &size);
     float* u_vy=obter_val_f(calcf.f, size, u_vx);
@@ -113,6 +99,8 @@ int main(int argc, char* argv[]){
             printf("Opções de métodos:\n\n");
             printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n 4 = SECANTE \n\n");
             int f_op=0;
+
+            scanf("%d", &f_op);
 
             float x_root=run(f_op, 
                             calcf.a, 
