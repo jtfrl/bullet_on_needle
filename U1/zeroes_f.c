@@ -108,10 +108,9 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   float x=(a+b)/2;
   bool in_inter=true;
   float uniform=b-a; //deixamos o intervalo em dist. uniforme
-
   int k=0;
-  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
+  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   clock_t start = clock();
 
   while(fabs(f_or(x)>EPSI) && k<MAX_ITER){
@@ -134,7 +133,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   clock_t end = clock();
   printf("\n\n execução em: %.8f s", monitor_t(start, end));
 
-  if(k>MAX_ITER){
+  if(k>=MAX_ITER){
     printf("\n\nERRO! Máximo de iterações atingidas");
   }
   
