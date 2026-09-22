@@ -105,11 +105,11 @@ float method1(float a, float b, float (*f)(float), int k) {
 //> métodos 2 e 3 contam com a estratégia "naive" de ir no meio do intervalo
 
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
+  clock_t start = clock();
   float x=(a+b)/2;
   bool in_inter=true;
   float uniform=b-a; //deixamos o intervalo em dist. uniforme
 
-  clock_t start = clock();
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
@@ -126,23 +126,17 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
  
     if(phix(x)-x<EPSI){
-      clock_t end = clock();
-      printf("\n\n execução em: %.8f s", monitor_t(start, end));
       break;    
     }
     k++;
     printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
   
   }
-
- /*  clock_t end = clock();
-  printf("\n\n execução em: %.8f s", monitor_t(start, end)); */
+  clock_t end = clock();
+  printf("\n\n execução em: %.8f s", monitor_t(start, end));
   return x;
 
-
   if(k>MAX_ITER){
-    clock_t end = clock();
-    printf("\n\n execução em: %.8f s", monitor_t(start, end));
     printf("\n\nERRO! Máximo de iterações atingidas");
     return x;
   }
