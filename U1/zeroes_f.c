@@ -111,8 +111,8 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   int k=0;
 
   /* === histórico dos registros === */
-  float hist_x[MAX_ITER];
-  float hist_fx[MAX_ITER];
+  float hist_x[MAX_ITER+50];
+  float hist_fx[MAX_ITER+50];
   hist_x[0]=x;
   hist_fx[0]=f_or(x);
 
