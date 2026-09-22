@@ -133,8 +133,9 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     hist_x[k]=x;
     hist_fx[k]=f_or(x);
 
-    if(phix(x)-x<EPSI){
-      break;    
+    if(fabs(phix(x)-x)<EPSI){
+       printf("EXECUÇÃO PAROU");
+       break;    
     }   
   }
   clock_t end = clock();
