@@ -110,7 +110,12 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   float uniform=b-a; //deixamos o intervalo em dist. uniforme
   int k=0;
 
-  printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
+  /* === histórico dos registros === */
+  float hist_x[MAX_ITER];
+  float hist_fx[MAX_ITER];
+  hist_x[0]=x;
+  hist_fx[0]=f_or(x);
+
   clock_t start = clock();
 
   while(fabs(f_or(x)>EPSI) && k<MAX_ITER){
@@ -123,14 +128,19 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
       //x=a+uniform*((float)rand()/(float)RAND_MAX);
       x=a+uniform*((float)rand()/frm);
     }
-    // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
- 
+    k++;
+    //adcionando histórico
+    hist_x[k]=x;
+    hist_fx[k]=f_or(x);
+
     if(phix(x)-x<EPSI){
       break;    
-    }
-    k++;  
+    }   
   }
   clock_t end = clock();
+
+  for(int i=0;i<=k;i++)  printf("k=%d, x=%.5f, f(x)=%g \n\n", i, hist_x[i], hist_fx[i]);
+
   printf("\n\n execução em: %.8f s", monitor_t(start, end));
 
   if(k>=MAX_ITER){
