@@ -3,7 +3,7 @@
 
 float* gerar_interval(float a, float b, float step, int *out_size){
     // out_size avisa que deve parar se chegar em zero
-    if(step == 0.0f || (a<b && step<0.0f) || (a>b && step<0.0f)){
+    if(step == 0.0f || (a<b && step<0.0f) || (a>b && step>0.0f)){
         *out_size=0;
         return NULL;
     }
@@ -57,20 +57,13 @@ float run(const int op, float a,
         float (*phix)(float),
         float (*derf)(float), int k){
 
-    float x_root=0.0f;
-    if(op==0){
-        x_root=method0(a,b,f,k);
+    switch (op) {
+        case 0: return method0(a, b, f, k);
+        case 1: return method1(a, b, f, k);
+        case 2: return method2(a, b, f, phix);
+        case 3: return method3(a, b, f, derf);
+        case 4: return method4(a, b, f);
+        case 5: return method5(a, b, f, derf);
+        default: return NAN;
     }
-    else if(op==1){
-        x_root=method1(a,b,f,k);
-    }
-    else if(op==2){
-        x_root=method2(a,b,f,phix);
-    }
-    else if (op==3){
-        x_root=method3(a, b, f, derf);
-    }else{
-        x_root=method4(a,b,f);
-    }
-   return x_root;
 }

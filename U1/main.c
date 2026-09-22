@@ -34,19 +34,24 @@ static float phix_4(float x) { return (-4/sin(x));}
 
 
 typedef struct {
-    const char *nome;
     double (*f)(double);
     double (*df)(double);
     double (*phi)(double);
     double a, b, h;
 } MathCalc;
 
+static const MathCalc Questoes[]={
+    {f1, df1, phix_1, 0, 3, 0.6f},
+    {f2, df2, phix_2, 0, 5, 0.7f},
+    {f3, df2, phix_3, -5, 5, 0.5f},
+    {f4, df4, phix_4, 1, 5, 0.5f}
+};
 
 
 int main(int argc, char* argv[]){
 
-    if(argc<4){
-        perror("Esperado o seguinte uso: ./main <inicio> <fim> <passo>");
+    if(argc<5){
+        perror("Esperado o seguinte uso: ./main <inicio> <fim> <passo> <funcao>");
         return -1;
     }
 
@@ -54,12 +59,24 @@ int main(int argc, char* argv[]){
     float a=atof(argv[1]);
     float b=atof(argv[2]);
     float h=atof(argv[3]);
+    int f_id=atoi(argv[4]);
+
+    if(f_id<0 || f_id>3){
+        fprintf(stderr, "\n\n ERRO: selecione um número de função entre 0 e 3");
+        return EXIT_FAILURE;
+    }
+
+    MathCalc calcf=Questoes[f_id];
+    calcf.a=a;
+    calcf.b=b;
+    calcf.h=h;
+
 
    /*  float *u_vx1=gerar_interval(a,b,h,&size);
     float *u_vy1=obter_val_f(f1, size, u_vx1); */
 
-    float *u_vx2=gerar_interval(a,b,h,&size);
-    float *u_vy2=obter_val_f(f2, size, u_vx2);
+/*     float *u_vx2=gerar_interval(a,b,h,&size);
+    float *u_vy2=obter_val_f(f2, size, u_vx2); */
 
     /*
     float *u_vx3=gerar_interval(a,b,h,&size);
@@ -68,7 +85,14 @@ int main(int argc, char* argv[]){
     float *u_vx4=gerar_interval(a,b,h,&size);
     float *u_vy4=obter_val_f(f4, size, u_vx4); */
 
-    show_val_f(u_vy2, u_vx2, 1, size);
+    int size=0;
+    float* u_vx=gerar_interval(calcf.a, calcf.b, calcf.h, &size);
+    float* u_vy=obter_val_f(calcf.f, size, u_vx);
+
+    free(u_vx);
+    free(u_vy);
+
+    show_val_f(u_vy, u_vx, f_id, size);
 
     bool rnn=true;
     char op[10];
@@ -94,19 +118,13 @@ int main(int argc, char* argv[]){
             char op[10];
             int f_op=0;
 
-            fgets(op, sizeof(op), stdin);
-            f_op=atoi(op);
-
-            printf("Indique os valores do intervalo: ");
-            float u_a=0;
-            float u_b=0;
-            scanf("%f %f", &u_a, &u_b);
-            while (getchar() != '\n'); 
-            float x_root=0;
-            bool use_of_phi= (f_op==2) ? x_root=run(f_op, a, b, f2, phix_2, NULL, 0): (goto der_use);
-            der_use: 
-                bool use_of_der= (f_op==3)
-            float x_root=run(f_op, a, b, f2, NULL, NULL, 0);
+            float x_root=run(f_op, 
+                            calcf.a, 
+                            calcf.b, 
+                            calcf.f, 
+                            calcf.phi, 
+                            calcf.df, 
+                            0);
             printf("\n\nraiz da função: %.5f", x_root);
             break;
         }

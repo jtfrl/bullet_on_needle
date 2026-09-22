@@ -216,10 +216,10 @@ float method4(float a, float b, float (*f)(float)) {
     return x;
 }
 
-double method5(double a, double b,
+float method5(double a, double b,
                       double (*f)(double), double (*df)(double)) { //híbrido
     int k = 0;
-    double x = (a + b) / 2.0;
+    float x = (a + b) / 2.0;
     double erro = (b - a) / 2.0;
 
     printf("\n=== ESTRATEGIA HIBRIDA: Bisseccao + Newton ===\n");
