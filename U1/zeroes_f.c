@@ -73,7 +73,7 @@ float method0(float a, float b, float (*f)(float), int k) {
  *  FÓRMULA DA FALSA POSIÇÃO
  * ============================================================ */
 float sec(float a, float b, float (*f)(float)) {
-  return ((a * f(b) - b * f(a)) / f(b) - f(a));
+  return (a * f(b) - b * f(a)) / (f(b) - f(a));
 }
 
 float method1(float a, float b, float (*f)(float), int k) {
