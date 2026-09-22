@@ -105,7 +105,6 @@ float method1(float a, float b, float (*f)(float), int k) {
 //> métodos 2 e 3 contam com a estratégia "naive" de ir no meio do intervalo
 
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
-  clock_t start = clock();
   float x=(a+b)/2;
   bool in_inter=true;
   float uniform=b-a; //deixamos o intervalo em dist. uniforme
@@ -113,7 +112,9 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
   int k=0;
   printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
 
-  while(fabs(f_or(x)>EPSI)){
+  clock_t start = clock();
+
+  while(fabs(f_or(x)>EPSI) && k<MAX_ITER){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
                               //> e obter o valor da raiz
@@ -121,20 +122,17 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     if(phix(x)>a || phix(x)<b) in_inter=false;
     if(!in_inter){ 
       //x=a+uniform*((float)rand()/(float)RAND_MAX);
-      x=a+(float)rand()/frm/(uniform);
+      x=a+uniform*((float)rand()/frm);
     }
     // TODO aplicar método de verificação de máximo de f(x) vs. der_phix
  
     if(phix(x)-x<EPSI){
       break;    
     }
-    k++;
-    printf("k=%d, x=%.5f, f(x)=%g \n\n", k, x, f_or(x));
-  
+    k++;  
   }
   clock_t end = clock();
   printf("\n\n execução em: %.8f s", monitor_t(start, end));
-  return x;
 
   if(k>MAX_ITER){
     printf("\n\nERRO! Máximo de iterações atingidas");
