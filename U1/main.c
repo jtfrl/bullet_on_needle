@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
         {
         case 1:{
             printf("Opções de métodos:\n\n");
-            printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n 4 = SECANTE \n\n");
+            printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n 4 = SECANTE \n 5= HÍBRIDO \n\n");
             int f_op=0;
 
             scanf("%d", &f_op);
