@@ -7,7 +7,7 @@
    4 = SECANTE */
 
 
-const float EPSI = 1e-5;
+const float EPSI = 1e-10;
 
 float monitor_t(clock_t start, clock_t end){
   return ((double)(end-start))/CLOCKS_PER_SEC;
