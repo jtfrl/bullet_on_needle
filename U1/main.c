@@ -34,16 +34,16 @@ static float phix_4(float x) { return (-4/sin(x));}
 
 
 typedef struct {
-    double (*f)(double);
-    double (*df)(double);
-    double (*phi)(double);
-    double a, b, h;
+    float (*f)(float);
+    float (*df)(float);
+    float (*phi)(float);
+    float a, b, h;
 } MathCalc;
 
 static const MathCalc Questoes[]={
     {f1, df1, phix_1, 0, 3, 0.6f},
     {f2, df2, phix_2, 0, 5, 0.7f},
-    {f3, df2, phix_3, -5, 5, 0.5f},
+    {f3, df3, phix_3, -5, 5, 0.5f},
     {f4, df4, phix_4, 1, 5, 0.5f}
 };
 
@@ -55,7 +55,6 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
-    int size=0;
     float a=atof(argv[1]);
     float b=atof(argv[2]);
     float h=atof(argv[3]);
@@ -89,21 +88,19 @@ int main(int argc, char* argv[]){
     float* u_vx=gerar_interval(calcf.a, calcf.b, calcf.h, &size);
     float* u_vy=obter_val_f(calcf.f, size, u_vx);
 
+    show_val_f(u_vy, u_vx, f_id, size);
+
     free(u_vx);
     free(u_vy);
 
-    show_val_f(u_vy, u_vx, f_id, size);
-
     bool rnn=true;
-    char op[10];
     int _op=0;
 
     while(rnn){
         printf("\n\n::: DESEJA VERIFICAR ZEROS DE FUNÇÃO? ::: \n ");
         printf("[1] - SIM | [2] - NÃO\n\n");
         
-        fgets(op, sizeof(op), stdin);
-        _op=atoi(op);
+        scanf("%d", &_op);
         
         if(_op<1 || _op>2){ 
             perror("Selecione uma opção válida\n");
@@ -115,7 +112,6 @@ int main(int argc, char* argv[]){
         case 1:{
             printf("Opções de métodos:\n\n");
             printf("\n\n 0 = BISSECAÇÃO \n 1 = FALSA POS \n 2 = PONTO FIXO \n 3 = NEWTON-RAPHSON \n 4 = SECANTE \n\n");
-            char op[10];
             int f_op=0;
 
             float x_root=run(f_op, 

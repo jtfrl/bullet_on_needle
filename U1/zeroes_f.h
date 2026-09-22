@@ -20,8 +20,8 @@ float method1(float a, float b, float (*f)(float), int k);
 float method2(float a, float b, float(*f_or)(float), float(*phix)(float));
 float method3(float a, float b, float(*f_or)(float), float(*der_f)(float));
 float method4(float a, float b, float (*f)(float));          /* Secante         */
-float method5(double a, double b,
-                      double (*f)(double), double (*df)(double));//híbrido
+float method5(float a, float b,
+                      float (*f)(float), float (*df)(float)); //híbrido
 float monitor_t(clock_t start, clock_t end);
 
 

@@ -216,8 +216,8 @@ float method4(float a, float b, float (*f)(float)) {
     return x;
 }
 
-float method5(double a, double b,
-                      double (*f)(double), double (*df)(double)) { //híbrido
+float method5(float a, float b,
+                      float (*f)(float), float (*df)(float)) { //híbrido
     int k = 0;
     float x = (a + b) / 2.0;
     double erro = (b - a) / 2.0;
