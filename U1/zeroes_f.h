@@ -10,7 +10,7 @@
 
 #define frm (float)RAND_MAX
 extern const float EPSI; // usamos um extern para evitar redefinições
-#define MAX_ITER 100      /* limite de iterações para evitar loop infinito */
+#define MAX_ITER 100000      /* limite de iterações para evitar loop infinito */
 
 
 float numerical_der(float (*f)(float), float x);
