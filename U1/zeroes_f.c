@@ -118,7 +118,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
 
   clock_t start = clock();
 
-  while(fabs(f_or(x)>EPSI) && k<MAX_ITER){
+  while((fabs(f_or(x))>=EPSI) && k<MAX_ITER){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
                               //> e obter o valor da raiz
