@@ -123,7 +123,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
                               //> que vai ser usada para iterar 
                               //> e obter o valor da raiz
 
-    if(phix(x)>a || phix(x)<b) in_inter=false;
+    if(phix(x)<a || phix(x)>b) in_inter=false;
     if(!in_inter){ 
       //x=a+uniform*((float)rand()/(float)RAND_MAX);
       x=a+uniform*((float)rand()/frm);
