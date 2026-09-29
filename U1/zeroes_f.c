@@ -118,7 +118,7 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
 
   clock_t start = clock();
 
-  while(fabs(f_or(x)>EPSI) && k<MAX_ITER){
+  while((fabs(f_or(x)>EPSI)) && k<MAX_ITER){
     if(phix(x)!=0) x=phix(x); //> função de menor grau que f_or 
                               //> que vai ser usada para iterar 
                               //> e obter o valor da raiz
@@ -133,7 +133,8 @@ float method2(float a, float b, float(*f_or)(float), float(*phix)(float)){
     hist_x[k]=x;
     hist_fx[k]=f_or(x);
 
-    if(phix(x)-x<EPSI){
+    if(fabs(phix(x)-x)<EPSI){
+      printf("PAROU! (funçao phi chegou no mesmo valor de x)");
       break;    
     }   
   }
@@ -215,6 +216,8 @@ float method4(float a, float b, float (*f)(float)) {
     clock_t end = clock();
     printf("\n\n execução em: %.8f s", monitor_t(start, end));
     return x;
+
+    
 }
 
 float method5(float a, float b,
