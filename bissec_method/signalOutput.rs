@@ -1,7 +1,6 @@
 use std::io::{self, BufRead};
 use std::collections::VecDeque;
-//use micromath::F32Ext; 
-//use std::str::FromStr;
+// !!!! urgent refactor, not working !!!!
 
 // 'derive' dá instrução para o 
 // compilador poder fazer comparações se necessário
