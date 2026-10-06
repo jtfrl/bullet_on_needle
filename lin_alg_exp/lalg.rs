@@ -43,15 +43,15 @@ impl Lalg{
      */
 
 
-    pub fn create_pivot() -> vec<f64>{
-        let mut pivot: vec<f64>;
+    pub fn create_factor() -> vec<f64>{ // fator fracionario que ajuda na eliminação
+        let mut factor_el: vec<f64>;
         for j in 0..amatrix.len(){
             for i in 0..amatrix.len(){
-                pivot[j]=amatrix[i][j]/amatrix[i][i];
+                factor_el[j]=amatrix[i][j]/amatrix[i][i];
             }
         }
 
-        pivot
+        factor_el
     }
 
     pub fn swap_line(line_c:usize){
