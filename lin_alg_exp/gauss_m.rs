@@ -2,11 +2,14 @@
 pub mod lalg;
 use lalg: *;
 
-pub fn elim_matrix(a: &Vec<Vec<f64,f64>>, b: &[f64]) -> Option<Vec<f64>>{
-    // TODO aplicar pivo de lalg
+pub fn elim_matrix(a: &Vec<Vec<f64,f64>>, b: &[f64]) -> Vec<Vec<f64>>{
+    let mut el_pivot: Lalg{
+        // todo aplicar a função de create pivot
+        amatrix: a,
+    }
     for j in (0..n).rev(){
         //TODO controle 
-        //if pivot[i,j] == 0 panic!
+        //if el.pivot[j] == 0 panic!
     }
 
 }
@@ -35,3 +38,7 @@ pub fn retro_subs(a: &Vec<Vec<f64) -> Option<Vec<f64>>{
 
     Some(x)
 }
+
+
+// TODO 
+// fatoracao LU
