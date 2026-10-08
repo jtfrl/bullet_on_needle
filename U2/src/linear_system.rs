@@ -9,33 +9,43 @@ use std::ops::*;
 use std::{path::Path, fs};
 
 // TODO: get away from these shitty vectors!!!!
-#[derive(Clone)]
-struct LinearSystem<T>
-where T: Num + Copy {
+#[derive(Clone, Debug)]
+pub struct LinearSystem<T>
+where T: Num + Clone + FromPrimitive {
     pub r#as: Vec<Vec<T>>,
     pub bs  : Vec<T>,
     pub len : usize,
 }
 
 impl<T> LinearSystem<T>
-where T: Num + Copy {
-    fn gauss_elim(&mut self) {
+where T: Num + Clone + FromPrimitive {
+    pub fn from(matrix_name: &str) -> Self {
+        let ls = LinearSystem::<f64>::new(matrix_name);
+        Self::convert(ls).unwrap()
+    }
+
+    pub fn gauss_elim(&mut self)
+    where T: Send + Sync {
         let len = self.len;
         for p in 0..len {       // Pivots
             for i in (p+1)..len { // Rows
-                let m = self.r#as[i][p] / self.r#as[p][p];
+                println!("p: {p}, i: {i}");
+                let m = self.r#as[i][p].clone() / self.r#as[p][p].clone();
                 // Li <- Li - mik * Lpivo
-                for j in 0..len { // Cols
-                    self.r#as[i][j] = self.r#as[i][j] - 
-                        m * self.r#as[p][j];
+                self.r#as[i][p] = T::zero();
+                for j in p+1..len { // Cols
+                    self.r#as[i][j] = self.r#as[i][j].clone() - 
+                        m.clone() * self.r#as[p][j].clone();
                 }
+                // bi <- bi - mip*bp
+                self.bs[i] = self.bs[i].clone() - m*self.bs[p].clone();
             }
         }
     }
 
     fn convert(ls: LinearSystem<f64>) -> Option<LinearSystem<T>>
     where
-        T: Num + Copy + FromPrimitive,
+        T: Num + Clone + FromPrimitive,
     {
         Some(Self{
             r#as: ls.r#as
