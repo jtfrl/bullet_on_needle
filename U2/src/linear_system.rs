@@ -9,6 +9,7 @@ use std::ops::*;
 use std::{path::Path, fs};
 
 // TODO: get away from these shitty vectors!!!!
+// this is inteded to create a matrix (some helper attributes)
 #[derive(Clone, Debug)]
 pub struct LinearSystem<T>
 where T: Num + Clone + FromPrimitive {
@@ -24,17 +25,18 @@ where T: Num + Clone + FromPrimitive {
         Self::convert(ls).unwrap()
     }
 
+    //TODO control of changing lines (maybe another function)
     pub fn gauss_elim(&mut self)
     where T: Send + Sync {
         let len = self.len;
         for p in 0..len {       // Pivots
             for i in (p+1)..len { // Rows
                 println!("p: {p}, i: {i}");
-                let m = self.r#as[i][p].clone() / self.r#as[p][p].clone();
+                let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
                 // Li <- Li - mik * Lpivo
                 self.r#as[i][p] = T::zero();
                 for j in p+1..len { // Cols
-                    self.r#as[i][j] = self.r#as[i][j].clone() - 
+                    self.r#as[i][j] = self.r#as[i][j].clone()  
                         m.clone() * self.r#as[p][j].clone();
                 }
                 // bi <- bi - mip*bp
@@ -42,6 +44,35 @@ where T: Num + Clone + FromPrimitive {
             }
         }
     }
+    
+    pub fn retro_subs(&mut self) -> Option<Vec<f64>>{
+        where T: Send + Sync{
+            let n_bs=bs.len();
+
+            assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo tamanho (lin. de A = col. de B)!");
+
+            let mut x=vec![0.0f64;n];
+
+            for i in (0..n).rev(){
+                let mut soma=0.0f64;
+                for j in (i+1)..n{
+                    soma+=self.r#as[i][j]*x[j];
+                }
+                if r#as[i][i]==0.0{
+                    return None;
+                }
+
+                x[i]=(bs[i]-soma)/r#as[i][i];
+            }
+        }
+        Some(x)
+    }
+
+    // NEXT METHODS TO INCLUDE
+    // f*cking LU factoration
+    // apply LU to solve LinearSys
+    // gauss-jacobi iterative here too
+
 
     fn convert(ls: LinearSystem<f64>) -> Option<LinearSystem<T>>
     where
