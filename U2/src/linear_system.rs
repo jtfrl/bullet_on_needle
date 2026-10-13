@@ -25,7 +25,6 @@ where T: Num + Clone + FromPrimitive {
         Self::convert(ls).unwrap()
     }
 
-    //TODO control of changing lines (maybe another function)
     pub fn gauss_elim(&mut self)
     where T: Send + Sync {
         let len = self.len;
@@ -66,6 +65,37 @@ where T: Num + Clone + FromPrimitive {
             }
         }
         Some(x)
+    }
+
+    pub fn fact_LU(&mut self) -> Option<Vec<f64>>{
+        where T: Send + Sync{
+            let len = self.len;
+            let mut lower: Vec<Vec<T>> = vec![Vec::new();len];
+            let mut upper: Vec<Vec<T>> = vec![Vec::new();len];
+            /*
+                for p in 0..len {       // Pivots
+                for i in (p+1)..len { // Rows
+                    println!("p: {p}, i: {i}");
+                    let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
+                    // Li <- Li - mik * Lpivo
+                */
+            for i in 0..len{
+                for j in (i+1)..len{
+                    let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
+                    if i==j {lower[i][i]=1;}
+                    else if i>j {lower[i][j]=m;}
+                    else lower[i][j]=0;
+                }
+            }
+
+            // TODO upper needs to have the matrix w/ the gauss elim
+            //upper=gauss_elim(self);
+
+            // TODO apply lower to be used in order to get the y
+            // from formula Ly=b
+            // then use the y to solve Ux=y
+
+        }
     }
 
     // NEXT METHODS TO INCLUDE
