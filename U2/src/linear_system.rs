@@ -18,6 +18,8 @@ where T: Num + Clone + FromPrimitive {
     pub len : usize,
 }
 
+const eps: f64 = 1e-6_f64;
+
 impl<T> LinearSystem<T>
 where T: Num + Clone + FromPrimitive {
     pub fn from(matrix_name: &str) -> Self {
@@ -146,6 +148,26 @@ impl LinearSystem<f64> {
         let bs = read::handle_bs(bs_path, n);
         Self { r#as, bs, len: n }
     }
+
+
+    // GAUSS-JACOBI
+   pub fn gauss_j(&mut self) -> Option<Vec<f64>>{
+        where T: Send+Sync{
+            // TODO 
+        }
+   }
+
+   // GAUSS-SEIDEL
+   pub fn gauss_s(&mut self) -> Option<Vec<f64>>{
+        where T: Send+Sync{
+            // TODO 
+        }
+   }
+
+   pub fn residual_check(&mut self) -> Bool{
+    // TODO: indicará se a diferença entre Ax e B vai a zero
+   }
+    
     
     
 }
