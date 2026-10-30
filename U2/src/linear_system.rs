@@ -100,11 +100,6 @@ where T: Num + Clone + FromPrimitive {
         }
     }
 
-    // NEXT METHODS TO INCLUDE
-    // f*cking LU factoration
-    // apply LU to solve LinearSys
-    // gauss-jacobi iterative here too
-
 
     fn convert(ls: LinearSystem<f64>) -> Option<LinearSystem<T>>
     where
@@ -153,7 +148,15 @@ impl LinearSystem<f64> {
     // GAUSS-JACOBI
    pub fn gauss_j(&mut self) -> Option<Vec<f64>>{
         where T: Send+Sync{
-            // TODO 
+            let len=self.len;
+            let x_new: Vec<f64>;
+            let x_prev = vec![0; len];
+
+            // TODO alimentar "soma" com valores de a[i][j]*x_prev[i]
+            for i in 0..len{
+                x_new[i]=(1/self.r#as[i][i])*(self.bs[i]-soma);
+            }
+
         }
    }
 
@@ -168,6 +171,45 @@ impl LinearSystem<f64> {
     // TODO: indicará se a diferença entre Ax e B vai a zero
    }
     
+
+
+   // DISTÂNCIAS RELATIVAS E ABSOLUTAS
+   // as saídas dessas funções devem ser
+   // comapradas ao valor de eps
+   pub fn dist_abs(Vec<f64> x_new, Vec<f64> x) -> f64{
+        let tam=x_new.len();
+        let diff: Vec<f64>;
+
+        //assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo tamanho (lin. de A = col. de B)!");
+        // TODO: checar tamanho de sol. para vetor x
+        for i in 0..tam{
+            diff[i]=abs(x_new[i]-x[i]);
+        }
+
+        let max: f64;
+        max=0;
+        for sol_x in &diff{
+            if max<sol_x { max=sol_x;}
+        }
+
+        max;
+   }
     
+    
+   pub fn dist_rel(Vec<f64> x_new, Vec<f64> x) -> f64{
+        let diff_a=dist_abs(x_new, x);
+        let max: f64;
+        max=0;
+
+        for sol_x in &x_new{
+            sol_x=abs(sol_x);
+            if max<sol_x {max=sol_x;}
+        }
+
+        let diff_r=diff_a/max;
+
+        diff_r;
+   }
+
     
 }
