@@ -46,11 +46,12 @@ where T: Num + Clone + FromPrimitive {
         }
     }
     
-    pub fn retro_subs(&mut self) -> Option<Vec<f64>>{
+    pub fn retro_subs(&mut self) -> Option<Vec<f64>>
         where T: Send + Sync{
             let n_bs=bs.len();
 
-            assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo tamanho (lin. de A = col. de B)!");
+            assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo 
+            tamanho (lin. de A = col. de B)!");
 
             let mut x=vec![0.0f64;n];
 
@@ -65,11 +66,10 @@ where T: Num + Clone + FromPrimitive {
 
                 x[i]=(bs[i]-soma)/r#as[i][i];
             }
-        }
         Some(x)
     }
 
-    pub fn fact_LU(&mut self) -> Option<Vec<f64>>{
+    pub fn fact_LU(&mut self) -> Option<Vec<f64>>
         where T: Send + Sync{
             let len = self.len;
             let mut lower: Vec<Vec<T>> = vec![Vec::new();len];
@@ -98,7 +98,6 @@ where T: Num + Clone + FromPrimitive {
             // then use the y to solve Ux=y
 
         }
-    }
 
 
     fn convert(ls: LinearSystem<f64>) -> Option<LinearSystem<T>>
@@ -124,41 +123,54 @@ where T: Num + Clone + FromPrimitive {
         })
     }
 
-}
 
-impl LinearSystem<f64> {
-    pub fn new(matrix_name: &str) -> Self {
-        let mut as_path = Path::new(config::AS_PATH).join(matrix_name);
-        as_path.set_extension("mtx");
-        let bs_path = Path::new(config::BS_PATH).join(matrix_name);
 
-        let as_content = fs::read_to_string(&as_path).unwrap_or_else(|err| {
-            panic!("Erro ao ler o arquivo A ({:?}): {err}", as_path);
-        });
 
-        let r#as = read::extract_sas(&as_content);
-        let n = r#as.len();
-
-        // let opt_bs_content = fs::read_to_string(&bs_path);
-        let bs = read::handle_bs(bs_path, n);
-        Self { r#as, bs, len: n }
-    }
 
 
     // GAUSS-JACOBI
-   pub fn gauss_j(&mut self) -> Option<Vec<f64>>{
+   pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
-            let x_new: Vec<f64>;
-            let x_prev = vec![0; len];
+            let x_new: vec![0.0; len];
+            let x_prev = vec![0.0; len];
+            let mut soma = 0.0;
 
-            // TODO alimentar "soma" com valores de a[i][j]*x_prev[i]
-            for i in 0..len{
-                x_new[i]=(1/self.r#as[i][i])*(self.bs[i]-soma);
+            if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+
+            // === PASSO 1 ===
+            // de início, consideramos as soluções do vet. x 
+            // todas nulas[
+            while(max_iter>0){
+                for i in 0..len{
+                    // let soma=0.0;
+                    for _i in 0..len{
+                        if _i!=i {soma=soma+self.r#as[i][_i]*x_prev[i];}
+                    }
+
+                    // === PASSO 2===
+                    // atualizamos as soluções do vetor x
+                    // de acordo com o vetor de x anterior
+                    x_new[i]=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+                  
+                }
+
+                let d=dist_abs(&x_new, &x_prev); // usamos passagem por referencia
+                                                // para evitar overwrite
+                if d<eps {
+                    return Some(x_new);    
+                    break;
+                }
+
+                std::mem::swap(&mut x_prev, &mut x_new); // troca de vetores
+
+                max_iter=max_iter-1;
             }
 
+            //Some(x_new);
+            println!("\n\nATENÇÃO: Não convergiu.");
+            None // não converge
         }
-   }
 
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self) -> Option<Vec<f64>>{
@@ -179,15 +191,14 @@ impl LinearSystem<f64> {
    pub fn dist_abs(Vec<f64> x_new, Vec<f64> x) -> f64{
         let tam=x_new.len();
         let diff: Vec<f64>;
-
-        //assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo tamanho (lin. de A = col. de B)!");
-        // TODO: checar tamanho de sol. para vetor x
+        assert_eq(x_new.len(), x_prev.len(), "Os vetores de
+         solução x precisam ter o mesmo tamanho!");
+        
         for i in 0..tam{
             diff[i]=abs(x_new[i]-x[i]);
         }
 
-        let max: f64;
-        max=0;
+        let mut max = 0.0;
         for sol_x in &diff{
             if max<sol_x { max=sol_x;}
         }
@@ -198,8 +209,7 @@ impl LinearSystem<f64> {
     
    pub fn dist_rel(Vec<f64> x_new, Vec<f64> x) -> f64{
         let diff_a=dist_abs(x_new, x);
-        let max: f64;
-        max=0;
+        let mut max = 0.0;
 
         for sol_x in &x_new{
             sol_x=abs(sol_x);
@@ -211,5 +221,27 @@ impl LinearSystem<f64> {
         diff_r;
    }
 
-    
+
 }
+
+impl LinearSystem<f64> {
+    pub fn new(matrix_name: &str) -> Self {
+        let mut as_path = Path::new(config::AS_PATH).join(matrix_name);
+        as_path.set_extension("mtx");
+        let bs_path = Path::new(config::BS_PATH).join(matrix_name);
+
+        let as_content = fs::read_to_string(&as_path).unwrap_or_else(|err| {
+            panic!("Erro ao ler o arquivo A ({:?}): {err}", as_path);
+        });
+
+        let r#as = read::extract_sas(&as_content);
+        let n = r#as.len();
+
+        // let opt_bs_content = fs::read_to_string(&bs_path);
+        let bs = read::handle_bs(bs_path, n);
+        Self { r#as, bs, len: n }
+    }
+}
+
+    
+
