@@ -72,8 +72,8 @@ where T: Num + Clone + FromPrimitive {
     pub fn fact_LU(&mut self) -> Option<Vec<f64>>
         where T: Send + Sync{
             let len = self.len;
-            let mut lower: Vec<Vec<T>> = vec![Vec::new();len];
-            let mut upper: Vec<Vec<T>> = vec![Vec::new();len];
+            let mut lower: Vec<Vec<f64>> = vec![Vec::new();len];
+            let mut upper: Vec<Vec<f64>> = vec![Vec::new();len];
             /*
                 for p in 0..len {       // Pivots
                 for i in (p+1)..len { // Rows
@@ -84,14 +84,25 @@ where T: Num + Clone + FromPrimitive {
             for i in 0..len{
                 for j in (i+1)..len{
                     let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
-                    if i==j {lower[i][i]=1;}
+                    if i==j {lower[i][i]=1.0;}
                     else if i>j {lower[i][j]=m;}
-                    else lower[i][j]=0;
+                    else lower[i][j]=0.0;
                 }
             }
 
-            // TODO upper needs to have the matrix w/ the gauss elim
-            //upper=gauss_elim(self);
+
+            // still to be checked
+            for p in 0..len{
+                 for _i in 0..len{
+                    for _j in (_i+1)..len{
+                        let mult=self.r#as[_j][_i].clone()/self.r#as[_i][_i].clone();
+                        //if i==j {lower[i][i]=1;}
+                        else if _i>_j {upper[_i][_j]=0.0;}
+                        self.r#as[_i][_j]-=mult*self.r#as[_i][_j];
+                        else upper[_i][_j]=self.r#as[_i][_j];
+                    }
+                }
+            }
 
             // TODO apply lower to be used in order to get the y
             // from formula Ly=b
@@ -137,6 +148,8 @@ where T: Num + Clone + FromPrimitive {
             let mut soma = 0.0;
 
             if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+            assert_eq(self.len, x_prev.len(), "Os vetores de
+            solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
             // === PASSO 1 ===
             // de início, consideramos as soluções do vet. x 
@@ -172,10 +185,49 @@ where T: Num + Clone + FromPrimitive {
             None // não converge
         }
 
+   // TODO -  critérios de Seicheifell
+
    // GAUSS-SEIDEL
-   pub fn gauss_s(&mut self) -> Option<Vec<f64>>{
+   pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
         where T: Send+Sync{
-            // TODO 
+            let len=self.len;
+            let x_new: vec![0.0; len];
+            let x_prev = vec![0.0; len];
+            let mut soma = 0.0;
+
+            if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+
+            assert_eq(self.len, x_prev.len(), "Os vetores de
+            solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
+
+
+            while(max_iter>0){
+                //code
+                for i in 0..len{
+                    for j in 0..len{
+                        if j!=i {soma=soma+self.r#as[i][j]*x_prev[i];}
+                    }
+
+                    // TODO precisamos de novos valores de x para
+                    // x_new[2], p. ex., que aproveita x_new[1] para já
+                    // calcular com os valores novos encontrados
+                    x_new[i]=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+                    // TODO colocar seicheifell aqui (checar slides)
+                }
+
+                let d=dist_abs(&x_new, &x_prev);
+                if d<eps{
+                    return Some(x_new);
+                    break;
+                }
+
+                x_prev=x_new.clone();
+
+                max_iter=max_iter-1;
+            }
+
+            x_new;
+
         }
    }
 
@@ -195,7 +247,7 @@ where T: Num + Clone + FromPrimitive {
          solução x precisam ter o mesmo tamanho!");
         
         for i in 0..tam{
-            diff[i]=abs(x_new[i]-x[i]);
+            diff[i]=(x_new[i]-x[i]).abs();
         }
 
         let mut max = 0.0;
@@ -212,7 +264,7 @@ where T: Num + Clone + FromPrimitive {
         let mut max = 0.0;
 
         for sol_x in &x_new{
-            sol_x=abs(sol_x);
+            sol_x=sol_x.abs();
             if max<sol_x {max=sol_x;}
         }
 
