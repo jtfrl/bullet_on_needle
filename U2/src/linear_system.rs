@@ -143,8 +143,8 @@ where T: Num + Clone + FromPrimitive {
    pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
-            let x_new: vec![0.0; len];
-            let x_prev = vec![0.0; len];
+            let mut x_new: vec![0.0; len];
+            let mut x_prev = vec![0.0; len];
             let mut soma = 0.0;
 
             if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
@@ -189,29 +189,31 @@ where T: Num + Clone + FromPrimitive {
 
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
-        where T: Send+Sync{
             let len=self.len;
-            let x_new: vec![0.0; len];
-            let x_prev = vec![0.0; len];
-            let mut soma = 0.0;
+            let mut x_new: vec![0.0; len];
+            let mut soma = 0.0; 
 
             if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
 
             assert_eq(self.len, x_prev.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
-
             while(max_iter>0){
-                //code
+                let mut max_diff=0.0_f64;
                 for i in 0..len{
                     for j in 0..len{
-                        if j!=i {soma=soma+self.r#as[i][j]*x_prev[i];}
+                        if j!=i {soma=soma+self.r#as[i][j]*x_new[i];}
+                        //else {soma=soma+self.r#as[i][j]*x_new[i];}
                     }
 
-                    // TODO precisamos de novos valores de x para
-                    // x_new[2], p. ex., que aproveita x_new[1] para já
+                    // PASSO DE ATUALIZAÇÃO PARA CADA VALOR DE X_i
+                    // seja i+1 o novo vetor de X para encontrar a solução
+                    // cada índice 'a' em [i+1][a] é uma posição na linha do vetor
+                    // x_new[i+1][2], p. ex., que aproveita x_new[i+1][1] para já
                     // calcular com os valores novos encontrados
-                    x_new[i]=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+
+                    let new_value=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+                    x_new[i]=new_value;
                     // TODO colocar seicheifell aqui (checar slides)
                 }
 
@@ -220,16 +222,12 @@ where T: Num + Clone + FromPrimitive {
                     return Some(x_new);
                     break;
                 }
-
-                x_prev=x_new.clone();
-
                 max_iter=max_iter-1;
             }
 
-            x_new;
-
+            println!("\n\nATENÇÃO: Não convergiu.");
+            None
         }
-   }
 
    pub fn residual_check(&mut self) -> Bool{
     // TODO: indicará se a diferença entre Ax e B vai a zero
