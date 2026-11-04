@@ -46,7 +46,8 @@ where T: Num + Clone + FromPrimitive {
         }
     }
     
-    pub fn retro_subs(&mut self) -> Option<Vec<f64>>
+    // agora, usamos 1 para retrossubstituição, e 2 para substituição frontal
+    pub fn retro_frontis_subs(&mut self, op: usize) -> Option<Vec<f64>>
         where T: Send + Sync{
             let n_bs=bs.len();
 
@@ -55,16 +56,33 @@ where T: Num + Clone + FromPrimitive {
 
             let mut x=vec![0.0f64;n];
 
-            for i in (0..n).rev(){
-                let mut soma=0.0f64;
-                for j in (i+1)..n{
-                    soma+=self.r#as[i][j]*x[j];
-                }
-                if r#as[i][i]==0.0{
-                    return None;
-                }
+            if(op==1){
+                for i in (0..n).rev(){
+                    let mut soma=0.0f64;
+                    for j in (i+1)..n{
+                        soma+=self.r#as[i][j]*x[j];
+                    }
+                    if r#as[i][i]==0.0{
+                        return None;
+                    }
 
-                x[i]=(bs[i]-soma)/r#as[i][i];
+                    x[i]=(bs[i]-soma)/r#as[i][i];
+                }
+            }else if(op==2){
+                  for i in (0..n){
+                    let mut soma=0.0f64;
+                    for j in (i+1)..n{
+                        soma+=self.r#as[i][j]*x[j];
+                    }
+                    if r#as[i][i]==0.0{
+                        return None;
+                    }
+
+                    x[i]=(bs[i]-soma)/r#as[i][i];
+                }
+            }
+            else{
+                panic!("ERRO! Escolha uma opção para retrossubstituição (1) ou substituição frontal (2).");
             }
         Some(x)
     }
@@ -72,40 +90,43 @@ where T: Num + Clone + FromPrimitive {
     pub fn fact_LU(&mut self) -> Option<Vec<f64>>
         where T: Send + Sync{
             let len = self.len;
-            let mut lower: Vec<Vec<f64>> = vec![Vec::new();len];
-            let mut upper: Vec<Vec<f64>> = vec![Vec::new();len];
-            /*
-                for p in 0..len {       // Pivots
-                for i in (p+1)..len { // Rows
-                    println!("p: {p}, i: {i}");
-                    let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
-                    // Li <- Li - mik * Lpivo
-                */
+            let mut lower: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
+            let mut upper: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
+
+            
             for i in 0..len{
+                lower[i][i]=1.0;
+                if self.r#as[i][i]==0.0 { return None; } // não necessário trocar 
                 for j in (i+1)..len{
                     let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
-                    if i==j {lower[i][i]=1.0;}
-                    else if i>j {lower[i][j]=m;}
-                    else lower[i][j]=0.0;
-                }
-            }
-
-
-            // still to be checked
-            for p in 0..len{
-                 for _i in 0..len{
-                    for _j in (_i+1)..len{
-                        let mult=self.r#as[_j][_i].clone()/self.r#as[_i][_i].clone();
-                        //if i==j {lower[i][i]=1;}
-                        else if _i>_j {upper[_i][_j]=0.0;}
-                        self.r#as[_i][_j]-=mult*self.r#as[_i][_j];
-                        else upper[_i][_j]=self.r#as[_i][_j];
+                    /* else if i>j {lower[i][j]=mult;}
+                    else lower[i][j]=0.0; */
+                    for k in i..len{
+                        self.r#as[j][k]-=mult*self.r#as[i][k];
                     }
                 }
             }
+            // still to be checked
+           
+                 for _i in 0..len{
+                    for _j in (_i+1)..len{
+                        let mult=self.r#as[_j][_i].clone()/self.r#as[_i][_i].clone();
+                         for p in 0..len{
+                        //if i==j {lower[i][i]=1;}
+                        self.r#as[_j][p]-=mult*self.r#as[_i][p];
+                         }
+                        //else if _i>_j {upper[_i][_j]=0.0;}
+                        upper[_i][_j]=self.r#as[_i][p];
+                }
+            }
+
+            let lower_y_b: LinearSystem(lower, bs, len(lower));
 
             // TODO apply lower to be used in order to get the y
             // from formula Ly=b
+            let y:vec![f64] = lower_y_b.retro_subs();
+
+
             // then use the y to solve Ux=y
 
         }
@@ -143,8 +164,8 @@ where T: Num + Clone + FromPrimitive {
    pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
-            let mut x_new: vec![0.0; len];
-            let mut x_prev = vec![0.0; len];
+            let mut x_new: vec![0.0f64; len];
+            let mut x_prev = vec![0.0f64; len];
             let mut soma = 0.0;
 
             if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
@@ -190,7 +211,7 @@ where T: Num + Clone + FromPrimitive {
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
             let len=self.len;
-            let mut x_new: vec![0.0; len];
+            let mut x_new: vec![0.0f64; len];
             let mut soma = 0.0; 
 
             if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
