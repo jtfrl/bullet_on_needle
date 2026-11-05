@@ -21,7 +21,7 @@ where T: Num + Clone + FromPrimitive {
 const eps: f64 = 1e-6_f64;
 
 impl<T> LinearSystem<T>
-where T: Num + Clone + FromPrimitive {
+where T: Num + Clone + FromPrimitive + ToPrimitive {
     pub fn from(matrix_name: &str) -> Self {
         let ls = LinearSystem::<f64>::new(matrix_name);
         Self::convert(ls).unwrap()
@@ -35,11 +35,12 @@ where T: Num + Clone + FromPrimitive {
                 println!("p: {p}, i: {i}");
                 let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
                 // Li <- Li - mik * Lpivo
+                
                 self.r#as[i][p] = T::zero();
                 for j in p+1..len { // Cols
-                    self.r#as[i][j] = self.r#as[i][j].clone()  
-                        m.clone() * self.r#as[p][j].clone();
+                    self.r#as[i][j] = self.r#as[i][j].clone() - m.clone() * self.r#as[p][j].clone();
                 }
+
                 // bi <- bi - mip*bp
                 self.bs[i] = self.bs[i].clone() - m*self.bs[p].clone();
             }
@@ -88,47 +89,68 @@ where T: Num + Clone + FromPrimitive {
     }
 
     pub fn fact_LU(&mut self) -> Option<Vec<f64>>
-        where T: Send + Sync{
+        where T: NumAssign + ToPrimitive{
             let len = self.len;
             let mut lower: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
             let mut upper: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
 
-            
+            // MATRIZ INFERIOR E SUPERIOR
             for i in 0..len{
                 lower[i][i]=1.0;
-                if self.r#as[i][i]==0.0 { return None; } // não necessário trocar 
+                if self.r#as[i][i].is_zero() { 
+                    panic!("Pivô nulo!");
+                    return None; 
+                } // Fatora em LU, mas se zero está no pivô vai a None
                 for j in (i+1)..len{
                     let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
-                    /* else if i>j {lower[i][j]=mult;}
-                    else lower[i][j]=0.0; */
+                    lower[j][i]=mult.to_f64()?;
                     for k in i..len{
-                        self.r#as[j][k]-=mult*self.r#as[i][k];
+                        let advance=self.r#as[i][k].clone();
+                        self.r#as[j][k]-=mult*advance;
                     }
                 }
             }
-            // still to be checked
+
+            for g in 0..len{
+                for h in g..len{
+                    upper[g][h]=self.r#as[g][h].to_f64()?;
+                }
+            }
            
-                 for _i in 0..len{
+            // MATRIZ SUPERIOR (ESCALONADA)
+           /*  for _i in 0..len{
                     for _j in (_i+1)..len{
                         let mult=self.r#as[_j][_i].clone()/self.r#as[_i][_i].clone();
                          for p in 0..len{
-                        //if i==j {lower[i][i]=1;}
                         self.r#as[_j][p]-=mult*self.r#as[_i][p];
                          }
-                        //else if _i>_j {upper[_i][_j]=0.0;}
                         upper[_i][_j]=self.r#as[_i][p];
                 }
+            } */
+        
+
+            let mut y = vec![0.0f64; len];
+            for i in 0..len{
+                let mut s=0.0;
+                for j in 0..i{
+                    s+=lower[i][j]*y[j];
+                }
+                y[i]=(self.bs[i].to_f64()?-s);
             }
 
-            let lower_y_b: LinearSystem(lower, bs, len(lower));
+            let mut x=vec![0.0f64; len];
+            for i in (0..len).rev(){
+                let mut sigma=0.0;
+                for j in (i+1)..len{
+                    sigma+=upper[i][j]*x[j];
+                }
+                if upper[i][i].abs()<1e-12{
+                    return None; // Caso onde o pivô é nulo
+                }
+                x[i]=(y[i]-sigma)/upper[i][i];
+            }
 
-            // TODO apply lower to be used in order to get the y
-            // from formula Ly=b
-            let y:vec![f64] = lower_y_b.retro_subs();
-
-
-            // then use the y to solve Ux=y
-
+            Some(x)
         }
 
 
