@@ -24,6 +24,12 @@ impl<T> LinearSystem<T>
 where T: Num + Clone + FromPrimitive + ToPrimitive {
     pub fn from(matrix_name: &str) -> Self {
         let ls = LinearSystem::<f64>::new(matrix_name);
+        let ls.bs=
+        for entry in ls.bs.iter_mut(){
+            *entry-=50.0; // adaptamos cada vetor b
+                         //  para ficar no intervalo 
+                         // entre -50 e 50
+        }
         Self::convert(ls).unwrap()
     }
 
@@ -287,7 +293,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // convergência para gauss seidel
    // itera pelo vetor beta
    // a procura de algum valor que seja 
-   pub fn sassenfel(&mut self) -> bool{
+   pub fn sassenfeld(&mut self) -> bool{
      let n=self.len;
      let mut beta: vec![0.0f64;n];
      for i in 0..n{
