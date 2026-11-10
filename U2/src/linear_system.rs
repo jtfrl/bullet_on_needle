@@ -116,17 +116,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     upper[g][h]=self.r#as[g][h].to_f64()?;
                 }
             }
-           
-            // MATRIZ SUPERIOR (ESCALONADA)
-           /*  for _i in 0..len{
-                    for _j in (_i+1)..len{
-                        let mult=self.r#as[_j][_i].clone()/self.r#as[_i][_i].clone();
-                         for p in 0..len{
-                        self.r#as[_j][p]-=mult*self.r#as[_i][p];
-                         }
-                        upper[_i][_j]=self.r#as[_i][p];
-                }
-            } */
         
 
             let mut y = vec![0.0f64; len];
@@ -176,12 +165,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             len: ls.len,
         })
     }
-
-
-
-
-
-
     // GAUSS-JACOBI
    pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
@@ -272,8 +255,55 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             None
         }
 
-   pub fn residual_check(&mut self) -> Bool{
+   pub fn residual_check(&mut self, vec<f64> x_sol) -> Bool{
     // TODO: indicará se a diferença entre Ax e B vai a zero
+        let len=self.len;
+        let mut perto: bool;
+        let mut line_Ax: vec![0.0f64; len];
+        for i in 0..len{
+            for j in 0..len{
+                line_Ax[i]=self.r#as[i][j].x_sol[i];
+            }
+        }
+
+        let mut max=0.0;
+        let mut diff=0.0;
+        let mut u=0;
+        for val in &line_Ax[u]{
+            diff=(val-self.bs[u]).abs();
+            if(max<dif) {max=diff;}
+        }
+
+        if max<=eps{
+            perto=true;
+        }
+        perto=false;
+
+        if perto {println!("Solução para o sistema é aceitável");}
+
+        perto;
+   }
+
+   // convergência para gauss seidel
+   // itera pelo vetor beta
+   // a procura de algum valor que seja 
+   pub fn sassenfel(&mut self) -> bool{
+     let n=self.len;
+     let mut beta: vec![0.0f64;n];
+     for i in 0..n{
+        let mut s=0.0;
+        for j in 0..n{
+            if(j!=i){
+                if j<i {s=self.r#as[i][j].abs()*beta[j];}
+                else {s=self.r#as[i][j].abs();}
+            }
+            beta[i]=s/self.r#as[i][i].abs();
+        }   
+        // iteramos em b para ir comparando com o 0
+        // e verificar se obtemos algum valor que de fato
+        // seja menor que 1
+        beta.iter().cloned().fold(0.0, f64::max) < 1.0;
+     }
    }
     
 
