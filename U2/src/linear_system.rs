@@ -22,10 +22,9 @@ const eps: f64 = 1e-6_f64;
 
 impl<T> LinearSystem<T>
 where T: Num + Clone + FromPrimitive + ToPrimitive {
-    pub fn from(matrix_name: &str) -> Self {
-        let ls = LinearSystem::<f64>::new(matrix_name);
-        let ls.bs=
-        for entry in ls.bs.iter_mut(){
+    pub fn from(matrix_name: &str, b_matrix: &str) -> Self {
+        let mut ls = LinearSystem::<f64>::new(matrix_name, b_matrix);
+        for b in ls.bs.iter_mut(){
             *entry-=50.0; // adaptamos cada vetor b
                          //  para ficar no intervalo 
                          // entre -50 e 50
@@ -354,13 +353,18 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 }
 
 impl LinearSystem<f64> {
-    pub fn new(matrix_name: &str) -> Self {
+    //(*)  alterada para usar endereço dedicado ao b
+    pub fn new(matrix_name: &str, b_matrix: &str) -> Self {
         let mut as_path = Path::new(config::AS_PATH).join(matrix_name);
         as_path.set_extension("mtx");
-        let bs_path = Path::new(config::BS_PATH).join(matrix_name);
+        let bs_path = Path::new(config::BS_PATH).join(b_matrix); // * 
 
         let as_content = fs::read_to_string(&as_path).unwrap_or_else(|err| {
-            panic!("Erro ao ler o arquivo A ({:?}): {err}", as_path);
+            panic!("Erro ao ler o arquivo da matriz A ({:?}): {err}", as_path);
+        });
+
+        let bs_content = fs::read_to_string(&b_matrix).unwrap_or_else(|err|{
+            panic!("Erro ao ler o arquivo do vetor b ({:?}): {err}", bs_path);
         });
 
         let r#as = read::extract_sas(&as_content);
