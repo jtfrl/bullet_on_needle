@@ -271,12 +271,12 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             }
         }
 
-        let mut max=0.0;
+        let mut max=0.0f64;
         let mut diff=0.0;
         let mut u=0;
-        for val in &line_Ax[u]{
-            diff=(val-self.bs[u]).abs();
-            if(max<dif) {max=diff;}
+        for val in &line_Ax{
+            for u in 0..len{diff=(*val-self.bs[u]).abs();}
+            if(max<diff) {max=diff;}
         }
 
         if max<=eps{
