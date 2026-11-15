@@ -8,8 +8,6 @@ use num_traits::{FromPrimitive, *};
 use std::ops::*;
 use std::{path::Path, fs};
 
-// TODO: get away from these shitty vectors!!!!
-// this is inteded to create a matrix (some helper attributes)
 #[derive(Clone, Debug)]
 pub struct LinearSystem<T>
 where T: Num + Clone + FromPrimitive {
@@ -198,10 +196,11 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     x_new[i]=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
                   
                 }
+                let r_check=self.residual_check(x_new);
 
                 let d=dist_abs(&x_new, &x_prev); // usamos passagem por referencia
                                                 // para evitar overwrite
-                if d<eps {
+                if d<eps || r_check{
                     return Some(x_new);    
                     break;
                 }
@@ -215,8 +214,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             println!("\n\nATENÇÃO: Não convergiu.");
             None // não converge
         }
-
-   // TODO -  critérios de Seicheifell
 
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
@@ -242,14 +239,19 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     // cada índice 'a' em [i+1][a] é uma posição na linha do vetor
                     // x_new[i+1][2], p. ex., que aproveita x_new[i+1][1] para já
                     // calcular com os valores novos encontrados
-
+                    let sfld=self.sassenfeld();
+                    if (!sfld) {
+                        panic!("Convergência não ocorre!");
+                        break;
+                    }
                     let new_value=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
                     x_new[i]=new_value;
-                    // TODO colocar seicheifell aqui (checar slides)
-                }
 
+                } 
+
+                let r_check=self.residual_check(x_new);
                 let d=dist_abs(&x_new, &x_prev);
-                if d<eps{
+                if d<eps || r_check{
                     return Some(x_new);
                     break;
                 }
@@ -261,7 +263,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         }
 
    pub fn residual_check(&mut self, vec<f64> x_sol) -> Bool{
-    // TODO: indicará se a diferença entre Ax e B vai a zero
         let len=self.len;
         let mut perto: bool;
         let mut line_Ax: vec![0.0f64; len];
