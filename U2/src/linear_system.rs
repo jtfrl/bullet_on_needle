@@ -1,5 +1,5 @@
 //  Box<dyn? []>
-
+//!!!err ---> erro detectado
 pub mod read;
 
 use crate::config;
@@ -23,11 +23,11 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     pub fn from(matrix_name: &str, b_matrix: &str) -> Self {
         let mut ls = LinearSystem::<f64>::new(matrix_name, b_matrix);
         for b in ls.bs.iter_mut(){
-            *entry-=50.0; // adaptamos cada vetor b
+            *b-=50.0; // adaptamos cada vetor b
                          //  para ficar no intervalo 
                          // entre -50 e 50
         }
-        Self::convert(ls).unwrap()
+        Self::convert(ls).unwrap() //!!!err
     }
 
     pub fn gauss_elim(&mut self)
@@ -53,9 +53,9 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     // agora, usamos 1 para retrossubstituição, e 2 para substituição frontal
     pub fn retro_frontis_subs(&mut self, op: usize) -> Option<Vec<f64>>
         where T: Send + Sync{
-            let n_bs=bs.len();
+            let n=self.bs.len();
 
-            assert_eq(r#as.len(), n_bs, "A e b precisam ter o mesmo 
+            assert_eq(self.r#as.len(), n_bs, "A e b precisam ter o mesmo 
             tamanho (lin. de A = col. de B)!");
 
             let mut x=vec![0.0f64;n];
@@ -66,23 +66,23 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     for j in (i+1)..n{
                         soma+=self.r#as[i][j]*x[j];
                     }
-                    if r#as[i][i]==0.0{
+                    if self.r#as[i][i]==0.0{
                         return None;
                     }
 
-                    x[i]=(bs[i]-soma)/r#as[i][i];
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i];
                 }
             }else if(op==2){
                   for i in (0..n){
-                    let mut soma=0.0f64;
-                    for j in (i+1)..n{
+                    let mut soma=0.0f64; //!!!err
+                    for j in (i+1)..n{ //!!!err
                         soma+=self.r#as[i][j]*x[j];
                     }
-                    if r#as[i][i]==0.0{
+                    if self.r#as[i][i]==0.0{
                         return None;
                     }
 
-                    x[i]=(bs[i]-soma)/r#as[i][i];
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i];
                 }
             }
             else{
@@ -172,11 +172,11 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
-            let mut x_new: vec![0.0f64; len];
+            let mut x_new = vec![0.0f64; len]; 
             let mut x_prev = vec![0.0f64; len];
             let mut soma = 0.0;
 
-            if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+            if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
             assert_eq(self.len, x_prev.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
@@ -200,7 +200,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 let d=dist_abs(&x_new, &x_prev); // usamos passagem por referencia
                                                 // para evitar overwrite
-                if d<eps || r_check{
+                if d<eps | r_check{
                     return Some(x_new);    
                     break;
                 }
@@ -218,12 +218,12 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
             let len=self.len;
-            let mut x_new: vec![0.0f64; len];
+            let mut x_new = vec![0.0f64; len];
             let mut soma = 0.0; 
 
-            if(0..n).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+            if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
 
-            assert_eq(self.len, x_prev.len(), "Os vetores de
+            assert_eq(self.len, x_new.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
             while(max_iter>0){
@@ -249,9 +249,10 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 } 
 
+                //TODO: necessário verificar como adaptar, porque não tem previo aqui
                 let r_check=self.residual_check(x_new);
-                let d=dist_abs(&x_new, &x_prev);
-                if d<eps || r_check{
+                let d=dist_abs(&x_new, &x_prev); //!!!err 
+                if d<eps | r_check{
                     return Some(x_new);
                     break;
                 }
@@ -262,10 +263,10 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             None
         }
 
-   pub fn residual_check(&mut self, vec<f64> x_sol) -> Bool{
+   pub fn residual_check(&mut self, x_sol: Vec<f64>) -> Bool{
         let len=self.len;
         let mut perto: bool;
-        let mut line_Ax: vec![0.0f64; len];
+        let mut line_Ax = vec![0.0f64; len];
         for i in 0..len{
             for j in 0..len{
                 line_Ax[i]=self.r#as[i][j].x_sol[i];
@@ -295,7 +296,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // a procura de algum valor que seja 
    pub fn sassenfeld(&mut self) -> bool{
      let n=self.len;
-     let mut beta: vec![0.0f64;n];
+     let mut beta = vec![0.0f64;n];
      for i in 0..n{
         let mut s=0.0;
         for j in 0..n{
@@ -317,10 +318,10 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // DISTÂNCIAS RELATIVAS E ABSOLUTAS
    // as saídas dessas funções devem ser
    // comapradas ao valor de eps
-   pub fn dist_abs(Vec<f64> x_new, Vec<f64> x) -> f64{
+   pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         let tam=x_new.len();
         let diff: Vec<f64>;
-        assert_eq(x_new.len(), x_prev.len(), "Os vetores de
+        assert_eq(x_new.len(), x.len(), "Os vetores de
          solução x precisam ter o mesmo tamanho!");
         
         for i in 0..tam{
@@ -336,7 +337,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    }
     
     
-   pub fn dist_rel(Vec<f64> x_new, Vec<f64> x) -> f64{
+   pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         let diff_a=dist_abs(x_new, x);
         let mut max = 0.0;
 
