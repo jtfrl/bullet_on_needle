@@ -1,10 +1,11 @@
 //  Box<dyn? []>
 //!!!err ---> erro detectado
+//[@] possivel ajuste
 pub mod read;
 
 use crate::config;
 
-use num_traits::{FromPrimitive, *};
+use num_traits::{Num, FromPrimitive, ToPrimitive};
 use std::ops::*;
 use std::{path::Path, fs};
 
@@ -13,7 +14,7 @@ pub struct LinearSystem<T>
 where T: Num + Clone + FromPrimitive {
     pub r#as: Vec<Vec<T>>,
     pub bs  : Vec<T>,
-    pub len : usize,
+    pub len : usize,checando
 }
 
 const eps: f64 = 1e-12_f64;
@@ -27,7 +28,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                          //  para ficar no intervalo 
                          // entre -50 e 50
         }
-        Self::convert(ls).unwrap() //!!!err
+        Self::convert(ls).unwrap() 
     }
 
     pub fn gauss_elim(&mut self)
@@ -55,11 +56,14 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         where T: Send + Sync{
             let n=self.bs.len();
 
-            assert_eq(self.r#as.len(), n_bs, "A e b precisam ter o mesmo 
+            assert_eq(self.r#as.len(), n, "A e b precisam ter o mesmo \
             tamanho (lin. de A = col. de B)!");
 
             let mut x=vec![0.0f64;n];
-
+            
+            //!!!err
+            // atribuição falha em soma (conflito de tipos T e f64)
+            // [@] checando se atualização no num_traits resolve isso
             if(op==1){
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
@@ -74,8 +78,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 }
             }else if(op==2){
                   for i in (0..n){
-                    let mut soma=0.0f64; //!!!err
-                    for j in (i+1)..n{ //!!!err
+                    let mut soma=0.0f64; 
+                    for j in (i+1)..n{ 
                         soma+=self.r#as[i][j]*x[j];
                     }
                     if self.r#as[i][i]==0.0{
@@ -251,7 +255,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 //TODO: necessário verificar como adaptar, porque não tem previo aqui
                 let r_check=self.residual_check(x_new);
-                let d=dist_abs(&x_new, &x_prev); //!!!err 
+                let d=dist_abs(&x_new, &x_prev);
                 if d<eps | r_check{
                     return Some(x_new);
                     break;
@@ -265,7 +269,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
    pub fn residual_check(&mut self, x_sol: Vec<f64>) -> Bool{
         let len=self.len;
-        let mut perto: bool;
+        let mut perto: bool = false;
         let mut line_Ax = vec![0.0f64; len];
         for i in 0..len{
             for j in 0..len{
@@ -284,10 +288,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         if max<=eps{
             perto=true;
         }
-        perto=false;
-
         if perto {println!("Solução para o sistema é aceitável");}
-
         perto;
    }
 

@@ -29,7 +29,9 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
                                     // evitar problemas nos demais métodos
 
     let mut x_sol: vec![0.0f64, n];
-    let n=linearA_b.r#as.len;
+    //!!!err
+    // aqui teria que adaptar pra ter o tamanho do a
+    let n=linearA_b.r#as.len; 
     // let mut convergence: bool = false;
           
     let sol_t=Instant::now(); //> tempo de solução
@@ -39,7 +41,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             //println!("{m:?} \n");
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
             let mut input: usize = input.trim().parse().unwrap();
-            if input<1 || input>2 {panic("Escolha uma opção válida para obter o x");}
+            if input<1 || input>2 {panic!("Escolha uma opção válida para obter o x");}
             x_sol=copy.retro_frontis_subs(input);
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
@@ -69,7 +71,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     let sfinal_t=sol_t.elapsed();
 
     println!("\n\nTEMPO DE CARGA: {:?} | \t TEMPO DE SOLUÇÃO: {:?}", (final_t.as_secs_f64()*1e3), (sfinal_t.as_secs_f64()*1e3));
-    println("\n\n");
+    println!("\n\n");
     show_res(x_sol,linearA_b.r#as, linearA_b.bs);
     Some(x_sol)
 }
@@ -77,7 +79,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 fn show_res(x: vec![f64], a: &str, b: &str){
     println!("\nA = {a}, B = {b}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
-    for num in &x{
+    for num in &x{src/linear_system.rs:341:20:
         println!("\n {num}");
     }
 }
