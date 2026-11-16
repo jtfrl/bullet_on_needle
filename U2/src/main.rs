@@ -45,13 +45,15 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             // fato consegue resolver Ax=b com eliminação de Gauss
             
             let rc_1=linearA_b.residual_check(x_sol);
-            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor que o epsilon estabelecido!)");}
+            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor \
+            que o epsilon estabelecido!)");}
 
         }
         2=>{
             x_sol=copy.fact_LU();
             let rc_2=linearA_b.residual_check(x_sol);
-            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor que o epsilon estabelecido!)");}
+            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor \
+            que o epsilon estabelecido!)");}
         }
         3=>{
             x_sol=copy.gauss_s(MAX_ITER);
@@ -86,8 +88,8 @@ fn main() {
 
     if args.len() != 4{
         eprintln!(
-            "uso: {} <matrix.mtx> <vetor_b.mtx> <op> \n"\
-            op: 1=Gauss, 2=LU, 3=Gauss-Seidel, 4=Gauss-Jacobi, 
+            "uso: {} <matrix.mtx> <vetor_b.mtx> <op> \n\
+            op: 1=Gauss, 2=LU, 3=Gauss-Seidel, 4=Gauss-Jacobi", 
             args[0]
         );
         exit(1);
