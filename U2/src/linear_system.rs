@@ -56,7 +56,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         where T: Send + Sync{
             let n=self.bs.len();
 
-            assert_eq(self.r#as.len(), n, "A e b precisam ter o mesmo \
+            assert_eq!(self.r#as.len(), n, "A e b precisam ter o mesmo \
             tamanho (lin. de A = col. de B)!");
 
             let mut x=vec![0.0f64;n];
@@ -172,6 +172,46 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             len: ls.len,
         })
     }
+
+
+   // DISTÂNCIAS RELATIVAS E ABSOLUTAS
+   // as saídas dessas funções devem ser
+   // comapradas ao valor de eps
+   // declaramos aqui para serem usadas 
+   // nos próximos métodos
+   pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
+        let tam=x_new.len();
+        let diff: Vec<f64>;
+        assert_eq!(x_new.len(), x.len(), "Os vetores de
+         solução x precisam ter o mesmo tamanho!");
+        
+        for i in 0..tam{
+            diff[i]=(x_new[i]-x[i]).abs();
+        }
+
+        let mut max = 0.0;
+        for sol_x in &diff{
+            if max<sol_x { max=sol_x;}
+        }
+
+        max;
+   }
+    
+    
+   pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
+        let diff_a=dist_abs(x_new, x);
+        let mut max = 0.0;
+
+        for sol_x in &x_new{
+            sol_x=sol_x.abs();
+            if max<sol_x {max=sol_x;}
+        }
+
+        let diff_r=diff_a/max;
+
+        diff_r;
+   }
+
     // GAUSS-JACOBI
    pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
         where T: Send+Sync{
@@ -181,7 +221,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let mut soma = 0.0;
 
             if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
-            assert_eq(self.len, x_prev.len(), "Os vetores de
+            assert_eq!(self.len, x_prev.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
             // === PASSO 1 ===
@@ -227,12 +267,15 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
             if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
 
-            assert_eq(self.len, x_new.len(), "Os vetores de
+            assert_eq!(self.len, x_new.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
             while(max_iter>0){
                 let mut max_diff=0.0_f64;
                 for i in 0..len{
+                    // talvez essa variável de prévia
+                    // funcione melhor antes
+                    let mut disguised_as_prev=x_new.clone();
                     for j in 0..len{
                         if j!=i {soma=soma+self.r#as[i][j]*x_new[i];}
                         //else {soma=soma+self.r#as[i][j]*x_new[i];}
@@ -255,7 +298,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 //TODO: necessário verificar como adaptar, porque não tem previo aqui
                 let r_check=self.residual_check(x_new);
-                let d=dist_abs(&x_new, &x_prev);
+                let d=dist_abs(&x_new, &disguised_as_prev);
                 if d<eps | r_check{
                     return Some(x_new);
                     break;
@@ -316,41 +359,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     
 
 
-   // DISTÂNCIAS RELATIVAS E ABSOLUTAS
-   // as saídas dessas funções devem ser
-   // comapradas ao valor de eps
-   pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
-        let tam=x_new.len();
-        let diff: Vec<f64>;
-        assert_eq(x_new.len(), x.len(), "Os vetores de
-         solução x precisam ter o mesmo tamanho!");
-        
-        for i in 0..tam{
-            diff[i]=(x_new[i]-x[i]).abs();
-        }
-
-        let mut max = 0.0;
-        for sol_x in &diff{
-            if max<sol_x { max=sol_x;}
-        }
-
-        max;
-   }
-    
-    
-   pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
-        let diff_a=dist_abs(x_new, x);
-        let mut max = 0.0;
-
-        for sol_x in &x_new{
-            sol_x=sol_x.abs();
-            if max<sol_x {max=sol_x;}
-        }
-
-        let diff_r=diff_a/max;
-
-        diff_r;
-   }
 
 
 }

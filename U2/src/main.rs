@@ -79,7 +79,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 fn show_res(x: vec![f64], a: &str, b: &str){
     println!("\nA = {a}, B = {b}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
-    for num in &x{src/linear_system.rs:341:20:
+    for num in &x{
         println!("\n {num}");
     }
 }
