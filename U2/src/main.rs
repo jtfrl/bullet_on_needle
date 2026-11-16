@@ -6,7 +6,7 @@ use std::time::Instant;
 use num_bigint::BigInt;
 use num_rational::BigRational;
 use std::env; // ambiente de execução por linha de comando
-use std::process::exit: 
+use std::process::exit;
 
 // matrizes A a serem usadas
 // bcsstk22, 23, 24
