@@ -1,5 +1,3 @@
-//  Box<dyn? []>
-
 mod linear_system;
 pub mod config;
 
@@ -14,7 +12,7 @@ use std::process::exit:
 // bcsstk22, 23, 24
 
 use linear_system::LinearSystem;
-// ::!:: comentado para teste
+// ::!:: comentado para usar linha de comando
 // const MATRIX_NAME: &'static str = "add32.mtx";
 /* const MATRIX_NAME: &'static str = "bcsstk22.mtx";
 const VECTOR_B: &'static str = "add32.mtx"; */
@@ -23,9 +21,6 @@ const MAX_ITER: u32 = 10000;
 // acima antes era: dwb512.mtx
 
 fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
-    //TODO: usar a função show_res aqui
-    //TODO: aplicar verificações nos métodos não iterativos
-
     let carga_t=Instant::now(); //> tempo de carga
     let mut linearA_b = LinearSystem::<BigRational>::from(a_ls, b_ls);
     let final_t=carga_t.elapsed();
@@ -46,9 +41,17 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let mut input: usize = input.trim().parse().unwrap();
             if input<1 || input>2 {panic("Escolha uma opção válida para obter o x");}
             x_sol=copy.retro_frontis_subs(input);
+            // realizaremos um teste aqui para checar se o método de
+            // fato consegue resolver Ax=b com eliminação de Gauss
+            
+            let rc_1=linearA_b.residual_check(x_sol);
+            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor que o epsilon estabelecido!)");}
+
         }
         2=>{
             x_sol=copy.fact_LU();
+            let rc_2=linearA_b.residual_check(x_sol);
+            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor que o epsilon estabelecido!)");}
         }
         3=>{
             x_sol=copy.gauss_s(MAX_ITER);

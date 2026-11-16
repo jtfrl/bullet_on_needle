@@ -16,7 +16,7 @@ where T: Num + Clone + FromPrimitive {
     pub len : usize,
 }
 
-const eps: f64 = 1e-6_f64;
+const eps: f64 = 1e-12_f64;
 
 impl<T> LinearSystem<T>
 where T: Num + Clone + FromPrimitive + ToPrimitive {
