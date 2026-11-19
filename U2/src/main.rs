@@ -7,7 +7,7 @@ use num_bigint::BigInt;
 use num_rational::BigRational;
 use std::env; // ambiente de execução por linha de comando
 use std::process::exit;
-use std::io::{self Write};
+// use std::io::{self Write};
 
 // matrizes A a serem usadas
 // bcsstk22, 23, 24
@@ -95,13 +95,13 @@ fn main() {
 
     let m_a=&args[1];
     let m_b=&args[2];
-    let op: usize = match args[3].parse();
-
-    Ok(v)=> v,
-    Err(_)=>{
-        eprintln!("Número opicional inválido. Escolha um número de 1 a 4. op={}", args[3]);
-        exit(1);
-    }
+    let op: usize = match args[3].parse(){
+        Ok(v)=> v,
+        Err(_)=>{
+            eprintln!("Número opicional inválido. Escolha um número de 1 a 4. op={}", args[3]);
+            exit(1);
+        }
+    };
 
     apply_methods(m_a, m_b, op); 
 
