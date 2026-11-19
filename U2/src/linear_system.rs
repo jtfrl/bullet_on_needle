@@ -74,7 +74,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap();
+                    x[i]=(self.bs[i].to_f64().unwrap()-soma)/self.r#as[i][i].to_f64().unwrap();
                 }
             }else if op==2 {
                   for i in 0..n{
@@ -86,7 +86,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap();
+                    x[i]=(self.bs[i].to_f64().unwrap()-soma)/self.r#as[i][i].to_f64().unwrap();
                 }
             }
             else{
@@ -181,7 +181,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // nos próximos métodos
    pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         let tam=x_new.len();
-        let diff = vec![0.0f64; len];
+        let diff = vec![0.0f64; tam];
         assert_eq!(x_new.len(), x.len(), "Os vetores de
          solução x precisam ter o mesmo tamanho!");
         
@@ -200,7 +200,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     
    pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         // Precisamos de controlador para aplicar dist_abs
-        let diff_a=LinearSystem::<f64>{dist_abs(x_new, x)};
+        let diff_a=Self::dist_abs(x_new.clone(), x.clone());
         let mut max = 0.0;
 
         for sol_x in &x_new{
@@ -280,7 +280,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     // funcione melhor antes
                     disguised_as_prev=x_new.clone();
                     for j in 0..len{
-                        if j!=i {soma=soma+self.r#as[i][j]*x_new[i];}
+                        if j!=i {soma=soma+self.r#as[i][j].to_f64().unwrap()*x_new[i];}
                         //else {soma=soma+self.r#as[i][j]*x_new[i];}
                     }
 
@@ -294,7 +294,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         panic!("Convergência não ocorre!");
                         break;
                     }
-                    let new_value=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+                    let new_value=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i].to_f64.unwrap()-soma);
                     x_new[i]=new_value;
 
                 } 
@@ -344,6 +344,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    pub fn sassenfeld(&mut self) -> bool{
      let n=self.len;
      let mut beta = vec![0.0f64;n];
+
+     // TODO: ajustar lógica aqui
      for i in 0..n{
         let mut s=0.0;
         for j in 0..n{
