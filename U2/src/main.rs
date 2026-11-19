@@ -7,6 +7,7 @@ use num_bigint::BigInt;
 use num_rational::BigRational;
 use std::env; // ambiente de execução por linha de comando
 use std::process::exit;
+use std::io::{self Write};
 
 // matrizes A a serem usadas
 // bcsstk22, 23, 24
@@ -25,13 +26,9 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     let mut linearA_b = LinearSystem::<BigRational>::from(a_ls, b_ls);
     let final_t=carga_t.elapsed();
 
-    let mut copy=linearA_b.clone(); //> aplicamos copy para 
-                                    // evitar problemas nos demais métodos
-
-    let mut x_sol=vec![0.0f64, n];
-    // aqui teria que adaptar pra ter o tamanho do a
+    let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
     let n=linearA_b.r#as.len; 
-    // let mut convergence: bool = false;
+    let mut x_sol=vec![0.0f64, n];
           
     let sol_t=Instant::now(); //> tempo de solução
     match op {
@@ -76,7 +73,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 }
 
 fn show_res(x: Vec<f64>, a: &str, b: &str){
-    println!("\nA = {a}, B = {b}", a, b);
+    println!("\nA = {a}, B = {b}");
     println!("\nVALORES DO VETOR x PARA Ax=b");
     for num in &x{
         println!("\n {num}");
