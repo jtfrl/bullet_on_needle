@@ -28,8 +28,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     let mut copy=linearA_b.clone(); //> aplicamos copy para 
                                     // evitar problemas nos demais métodos
 
-    let mut x_sol: vec![0.0f64, n];
-    //!!!err
+    let mut x_sol=vec![0.0f64, n];
     // aqui teria que adaptar pra ter o tamanho do a
     let n=linearA_b.r#as.len; 
     // let mut convergence: bool = false;
@@ -47,7 +46,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             // fato consegue resolver Ax=b com eliminação de Gauss
             
             let rc_1=linearA_b.residual_check(x_sol);
-            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor \
+            if(!rc_1) {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
 
         }
@@ -76,7 +75,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     Some(x_sol)
 }
 
-fn show_res(x: vec![f64], a: &str, b: &str){
+fn show_res(x: Vec<f64>, a: &str, b: &str){
     println!("\nA = {a}, B = {b}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
     for num in &x{
