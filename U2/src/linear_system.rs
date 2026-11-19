@@ -68,25 +68,25 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
                     for j in (i+1)..n{
-                        soma+=self.r#as[i][j].to_f64()? * x[j];
+                        soma+=self.r#as[i][j].to_f64().to_f64().unwrap() * x[j];
                     }
                     if self.r#as[i][i]==0.0{
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i];
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap().abs();
                 }
             }else if op==2 {
                   for i in 0..n{
                     let mut soma=0.0f64; 
                     for j in (i+1)..n{ 
-                        soma+=self.r#as[i][j]to_f64()? *x[j];
+                        soma+=self.r#as[i][j].to_f64().unwrap()*x[j];
                     }
                     if self.r#as[i][i]==0.0{
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i];
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap().abs();
                 }
             }
             else{
@@ -191,7 +191,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
         let mut max = 0.0;
         for sol_x in &diff{
-            if max<*sol_x { max=sol_x;}  //> dereferenciamos o valor de sol_x
+            if max < *sol_x { max=*sol_x;}  //> dereferenciamos o valor de sol_x
         }
 
         max
@@ -205,7 +205,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
         for sol_x in &x_new{
             *sol_x=sol_x.abs();
-            if max<*sol_x {max=sol_x;}
+            if max<*sol_x {max=*sol_x;}
         }
 
         let diff_r=diff_a/max;
