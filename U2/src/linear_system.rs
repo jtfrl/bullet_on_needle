@@ -61,7 +61,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
             let mut x=vec![0.0f64;n];
             
-            if(op==1){
+            if op==1 {
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
                     for j in (i+1)..n{
@@ -73,8 +73,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                     x[i]=(self.bs[i]-soma)/self.r#as[i][i];
                 }
-            }else if(op==2){
-                  for i in (0..n){
+            }else if op==2 {
+                  for i in 0..n{
                     let mut soma=0.0f64; 
                     for j in (i+1)..n{ 
                         soma+=self.r#as[i][j]*x[j];
@@ -224,7 +224,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             // === PASSO 1 ===
             // de início, consideramos as soluções do vet. x 
             // todas nulas[
-            while(max_iter>0){
+            while max_iter>0{
                 for i in 0..len{
                     // let soma=0.0;
                     for _i in 0..len{
@@ -259,7 +259,9 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // GAUSS-SEIDEL
    pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
             let len=self.len;
-            let mut x_new = vec![0.0f64; len];
+            let mut x_new               = vec![0.0f64; len];
+            // abaixo: não usamos um prévio, mas precisamos de sua cópia
+            let mut disguised_as_prev   = vec![0.0f64; len]; 
             let mut soma = 0.0; 
 
             if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
@@ -267,12 +269,12 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             assert_eq!(self.len, x_new.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
-            while(max_iter>0){
+            while max_iter>0 {
                 let mut max_diff=0.0_f64;
                 for i in 0..len{
                     // talvez essa variável de prévia
                     // funcione melhor antes
-                    let mut disguised_as_prev=x_new.clone();
+                    disguised_as_prev=x_new.clone();
                     for j in 0..len{
                         if j!=i {soma=soma+self.r#as[i][j]*x_new[i];}
                         //else {soma=soma+self.r#as[i][j]*x_new[i];}
@@ -284,7 +286,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     // x_new[i+1][2], p. ex., que aproveita x_new[i+1][1] para já
                     // calcular com os valores novos encontrados
                     let sfld=self.sassenfeld();
-                    if (!sfld) {
+                    if !sfld {
                         panic!("Convergência não ocorre!");
                         break;
                     }
