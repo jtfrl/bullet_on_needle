@@ -68,13 +68,13 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
                     for j in (i+1)..n{
-                        soma+=self.r#as[i][j].to_f64().to_f64().unwrap() * x[j];
+                        soma+=self.r#as[i][j].to_f64().unwrap()* x[j];
                     }
                     if self.r#as[i][i]==0.0{
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap().abs();
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap();
                 }
             }else if op==2 {
                   for i in 0..n{
@@ -86,7 +86,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         return None;
                     }
 
-                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap().abs();
+                    x[i]=(self.bs[i]-soma)/self.r#as[i][i].to_f64().unwrap();
                 }
             }
             else{
@@ -96,7 +96,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     }
 
     pub fn fact_LU(&mut self) -> Option<Vec<f64>>
-        where T: NumAssign + ToPrimitive{
+        where T: NumAssign + ToPrimitive + Clone{
             let len = self.len;
             let mut lower: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
             let mut upper: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
@@ -113,7 +113,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     lower[j][i]=mult.to_f64()?;
                     for k in i..len{
                         let advance=self.r#as[i][k].clone();
-                        self.r#as[j][k]-=mult*advance;
+                        self.r#as[j][k]-=mult.clone()*advance;
                     }
                 }
             }
@@ -181,7 +181,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // nos próximos métodos
    pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         let tam=x_new.len();
-        let diff: Vec<f64>;
+        let diff = vec![0.0f64; len];
         assert_eq!(x_new.len(), x.len(), "Os vetores de
          solução x precisam ter o mesmo tamanho!");
         
@@ -200,7 +200,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     
    pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         // Precisamos de controlador para aplicar dist_abs
-        let diff_a=LinearSystem::dist_abs(x_new, x);
+        let diff_a=LinearSystem::<f64>{dist_abs(x_new, x)};
         let mut max = 0.0;
 
         for sol_x in &x_new{
@@ -221,7 +221,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let mut x_prev = vec![0.0f64; len];
             let mut soma = 0.0;
 
-            if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+            if(0..len).any(|i| self.r#as[i][i].to_f64().unwrap().abs()<1e-12) {return None;}
             assert_eq!(self.len, x_prev.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
 
@@ -245,7 +245,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 let d=LinearSystem::dist_abs(&x_new, &x_prev); // usamos passagem por referencia
                                                 // para evitar overwrite
-                if d<eps | r_check{
+                if d<eps || r_check{
                     return Some(x_new);    
                     break;
                 }
@@ -319,7 +319,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut line_Ax = vec![0.0f64; len];
         for i in 0..len{
             for j in 0..len{
-                line_Ax[i]=self.r#as[i][j].x_sol[i];
+                line_Ax[i]=self.r#as[i][j].to_f64().unwrap()*x_sol[i];
             }
         }
 
@@ -351,7 +351,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 if j<i {s=self.r#as[i][j].abs()*beta[j];}
                 else {s=self.r#as[i][j].abs();}
             }
-            beta[i]=s/self.r#as[i][i].abs();
+            else { beta[i]=s/self.r#as[i][i].abs(); }
+            
         }   
         // iteramos em b para ir comparando com o 0
         // e verificar se obtemos algum valor que de fato

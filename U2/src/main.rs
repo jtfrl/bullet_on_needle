@@ -75,16 +75,16 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 }
 
 fn show_res(x: Vec<f64>, a: Vec<Vec<f64>>, b: Vec<f64>){
-    println!("\nA = {a}, B = {b}");
+    println!("\nA = {}, B = {}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
     for num in &x{
-        println!("\n {num}");
+        println!("\n {}", *num);
     }
 }
 
 
 fn main() {
-    let args: Vec<String> = env::args().colect(); //> recebe via linha de comando as informações
+    let args: Vec<String> = env::args().collect(); //> recebe via linha de comando as informações
 
     if args.len() != 4{
         eprintln!(
