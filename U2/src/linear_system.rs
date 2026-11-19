@@ -14,7 +14,7 @@ pub struct LinearSystem<T>
 where T: Num + Clone + FromPrimitive {
     pub r#as: Vec<Vec<T>>,
     pub bs  : Vec<T>,
-    pub len : usize,checando
+    pub len : usize
 }
 
 const eps: f64 = 1e-12_f64;
@@ -61,9 +61,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
             let mut x=vec![0.0f64;n];
             
-            //!!!err
-            // atribuição falha em soma (conflito de tipos T e f64)
-            // [@] checando se atualização no num_traits resolve isso
             if(op==1){
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
