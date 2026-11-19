@@ -68,7 +68,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for i in (0..n).rev(){
                     let mut soma=0.0f64;
                     for j in (i+1)..n{
-                        soma+=self.r#as[i][j]*x[j];
+                        soma+=self.r#as[i][j].to_f64()? * x[j];
                     }
                     if self.r#as[i][i]==0.0{
                         return None;
@@ -80,7 +80,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                   for i in 0..n{
                     let mut soma=0.0f64; 
                     for j in (i+1)..n{ 
-                        soma+=self.r#as[i][j]*x[j];
+                        soma+=self.r#as[i][j]to_f64()? *x[j];
                     }
                     if self.r#as[i][i]==0.0{
                         return None;
@@ -191,10 +191,10 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
         let mut max = 0.0;
         for sol_x in &diff{
-            if max<sol_x { max=sol_x;}
+            if max<*sol_x { max=sol_x;}  //> dereferenciamos o valor de sol_x
         }
 
-        max;
+        max
    }
     
     
@@ -204,17 +204,17 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut max = 0.0;
 
         for sol_x in &x_new{
-            sol_x=sol_x.abs();
-            if max<sol_x {max=sol_x;}
+            *sol_x=sol_x.abs();
+            if max<*sol_x {max=sol_x;}
         }
 
         let diff_r=diff_a/max;
 
-        diff_r;
+        diff_r
    }
 
     // GAUSS-JACOBI
-   pub fn gauss_j(&mut self, max_iter: usize) -> Option<Vec<f64>>
+   pub fn gauss_j(&mut self, max_iter: u32) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
             let mut x_new = vec![0.0f64; len]; 
@@ -261,7 +261,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         }
 
    // GAUSS-SEIDEL
-   pub fn gauss_s(&mut self, max_iter: usize) -> Option<Vec<f64>>{
+   pub fn gauss_s(&mut self, max_iter: u32) -> Option<Vec<f64>>{
             let len=self.len;
             let mut x_new               = vec![0.0f64; len];
             // abaixo: não usamos um prévio, mas precisamos de sua cópia
@@ -335,7 +335,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             perto=true;
         }
         if perto {println!("Solução para o sistema é aceitável");}
-        perto;
+        perto
    }
 
    // convergência para gauss seidel
@@ -356,7 +356,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         // iteramos em b para ir comparando com o 0
         // e verificar se obtemos algum valor que de fato
         // seja menor que 1
-        beta.iter().cloned().fold(0.0, f64::max) < 1.0;
+        beta.iter().cloned().fold(0.0, f64::max) < 1.0
      }
    }
 

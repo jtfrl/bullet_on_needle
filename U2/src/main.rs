@@ -27,7 +27,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     let final_t=carga_t.elapsed();
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
-    let n=linearA_b.r#as.len; 
+    let n=linearA_b.r#as.len(); 
     let mut x_sol=vec![0.0f64, n];
           
     let sol_t=Instant::now(); //> tempo de solução
@@ -74,7 +74,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     Some(x_sol)
 }
 
-fn show_res(x: Vec<f64>, a: &str, b: &str){
+fn show_res(x: Vec<f64>, a: Vec<Vec<f64>>, b: Vec<f64>){
     println!("\nA = {a}, B = {b}");
     println!("\nVALORES DO VETOR x PARA Ax=b");
     for num in &x{
