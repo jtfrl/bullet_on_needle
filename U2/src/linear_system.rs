@@ -196,7 +196,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     
     
    pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
-        let diff_a=dist_abs(x_new, x);
+        let diff_a=LinearSystem::dist_abs(x_new, x);
         let mut max = 0.0;
 
         for sol_x in &x_new{
@@ -239,7 +239,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 }
                 let r_check=self.residual_check(x_new);
 
-                let d=dist_abs(&x_new, &x_prev); // usamos passagem por referencia
+                let d=LinearSystem::dist_abs(&x_new, &x_prev); // usamos passagem por referencia
                                                 // para evitar overwrite
                 if d<eps | r_check{
                     return Some(x_new);    
@@ -297,7 +297,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 //TODO: necessário verificar como adaptar, porque não tem previo aqui
                 let r_check=self.residual_check(x_new);
-                let d=dist_abs(&x_new, &disguised_as_prev);
+                let d=LinearSystem::dist_abs(&x_new, &disguised_as_prev);
                 if d<eps | r_check{
                     return Some(x_new);
                     break;
@@ -309,7 +309,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             None
         }
 
-   pub fn residual_check(&mut self, x_sol: Vec<f64>) -> Bool{
+   pub fn residual_check(&mut self, x_sol: Vec<f64>) -> bool{
         let len=self.len;
         let mut perto: bool = false;
         let mut line_Ax = vec![0.0f64; len];
@@ -324,7 +324,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut u=0;
         for val in &line_Ax{
             for u in 0..len{diff=(*val-self.bs[u]).abs();}
-            if(max<diff) {max=diff;}
+            if max<diff {max=diff;}
         }
 
         if max<=eps{
@@ -343,7 +343,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
      for i in 0..n{
         let mut s=0.0;
         for j in 0..n{
-            if(j!=i){
+            if j!=i {
                 if j<i {s=self.r#as[i][j].abs()*beta[j];}
                 else {s=self.r#as[i][j].abs();}
             }
@@ -355,10 +355,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         beta.iter().cloned().fold(0.0, f64::max) < 1.0;
      }
    }
-    
-
-
-
 
 }
 
