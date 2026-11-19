@@ -5,7 +5,10 @@ pub mod read;
 
 use crate::config;
 
-use num_traits::{Num, FromPrimitive, ToPrimitive};
+use num_traits::{Num, 
+    FromPrimitive, 
+    ToPrimitive,
+    NumAssign};
 use std::ops::*;
 use std::{path::Path, fs};
 
@@ -196,6 +199,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     
     
    pub fn dist_rel(x_new: Vec<f64>, x: Vec<f64>) -> f64{
+        // Precisamos de controlador para aplicar dist_abs
         let diff_a=LinearSystem::dist_abs(x_new, x);
         let mut max = 0.0;
 

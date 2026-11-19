@@ -36,21 +36,23 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             copy.gauss_elim();
             //println!("{m:?} \n");
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
-            let mut input: usize = input.trim().parse().unwrap();
-            if input<1 || input>2 {panic!("Escolha uma opção válida para obter o x");}
+            let mut choice = String::new();
+            std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
+            let input: usize = choice.trim().parse().ok()?;
+            //if input<1 || input>2 {panic!("Escolha uma opção válida para obter o x");}
             x_sol=copy.retro_frontis_subs(input);
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
             
             let rc_1=linearA_b.residual_check(x_sol);
-            if(!rc_1) {panic!("Solução não aceitável (o resíduo não é menor \
+            if !rc_1 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
 
         }
         2=>{
             x_sol=copy.fact_LU();
             let rc_2=linearA_b.residual_check(x_sol);
-            if(!rc_2) {panic!("Solução não aceitável (o resíduo não é menor \
+            if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
         }
         3=>{
