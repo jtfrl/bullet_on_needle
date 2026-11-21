@@ -28,19 +28,17 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
     let n=linearA_b.r#as.len(); 
-    let mut x_sol=vec![0.0f64; n];
           
     let sol_t=Instant::now(); //> tempo de solução
     match op {
+    let mut x_sol=vec![0.0f64; n];
         1 =>{
             copy.gauss_elim();
-            //println!("{m:?} \n");
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
             let mut choice = String::new();
             std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
-            let input: usize = choice.trim().parse().ok()?;
-            //if input<1 || input>2 {panic!("Escolha uma opção válida para obter o x");}
-            x_sol=copy.retro_frontis_subs(input.clone());
+            let input: usize = choice.trim().parse()::<usize>().expect("Erro ao ler número.");
+            x_sol=copy.retro_frontis_subs(input);
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
             
@@ -56,10 +54,10 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             que o epsilon estabelecido!)");}
         }
         3=>{
-            x_sol=copy.gauss_s(MAX_ITER.clone());
+            x_sol=copy.gauss_s(MAX_ITER);
         }
         4=>{
-            x_sol=copy.gauss_j(MAX_ITER.clone());
+            x_sol=copy.gauss_j(MAX_ITER);
         }
         _=>{
             panic!("\nOpção inválida. Use números entre 1 e 4.");

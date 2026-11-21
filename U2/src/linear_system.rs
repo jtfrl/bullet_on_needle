@@ -244,7 +244,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 let r_check=self.residual_check(x_new);
 
                 // TODO: adaptar para não usar mais referências
-                let d=LinearSystem::dist_abs(&x_new, &x_prev); // usamos passagem por referencia
+                let d=LinearSystem::dist_abs(x_new.clone(), x_prev.clone()); // usamos passagem por referencia
                                                 // para evitar overwrite
                 if d<eps || r_check{
                     return Some(x_new);    
@@ -302,7 +302,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 // aplicado clone para evitar passar "para sempre" o x_new na 
                 // função residual_check
                 let r_check=self.residual_check(x_new.clone());
-                let d=LinearSystem::dist_abs(&x_new, &disguised_as_prev);
+                let d=LinearSystem::dist_abs(x_new.clone(), disguised_as_prev.clone());
                 if d<eps || r_check{
                     return Some(x_new);
                     break;
