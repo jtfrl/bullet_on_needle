@@ -37,7 +37,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
             let mut choice = String::new();
             std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
-            let input: usize = choice.trim().parse()::<usize>().expect("Erro ao ler número.");
+            let input: usize = choice.trim().parse::<usize>().expect("Erro ao ler número.");
             x_sol=copy.retro_frontis_subs(input);
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
@@ -48,16 +48,18 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
         }
         2=>{
-            x_sol=copy.fact_LU();
+            // aplicaremos unwrap aqui para evitar problemas de erro
+            // em atribuição de valores do x_sol
+            x_sol=copy.fact_LU().unwrap();
             let rc_2=linearA_b.residual_check(x_sol);
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
         }
         3=>{
-            x_sol=copy.gauss_s(MAX_ITER);
+            x_sol=copy.gauss_s(MAX_ITER).unwrap();
         }
         4=>{
-            x_sol=copy.gauss_j(MAX_ITER);
+            x_sol=copy.gauss_j(MAX_ITER).unwrap();
         }
         _=>{
             panic!("\nOpção inválida. Use números entre 1 e 4.");
