@@ -181,7 +181,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    // nos próximos métodos
    pub fn dist_abs(x_new: Vec<f64>, x: Vec<f64>) -> f64{
         let tam=x_new.len();
-        let diff = vec![0.0f64; tam];
+        let mut diff = vec![0.0f64; tam];
         assert_eq!(x_new.len(), x.len(), "Os vetores de
          solução x precisam ter o mesmo tamanho!");
         
@@ -204,7 +204,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut max = 0.0;
 
         for sol_x in &x_new{
-            *sol_x=sol_x.abs();
+            *sol_x=*sol_x.abs();
             if max<*sol_x {max=*sol_x;}
         }
 
@@ -238,11 +238,12 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     // === PASSO 2===
                     // atualizamos as soluções do vetor x
                     // de acordo com o vetor de x anterior
-                    x_new[i]=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i]-soma);
+                    x_new[i]=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i].to_f64().unwrap()-soma);
                   
                 }
                 let r_check=self.residual_check(x_new);
 
+                // TODO: adaptar para não usar mais referências
                 let d=LinearSystem::dist_abs(&x_new, &x_prev); // usamos passagem por referencia
                                                 // para evitar overwrite
                 if d<eps || r_check{
@@ -333,7 +334,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         if max<=eps{
             perto=true;
         }
-        if perto {println!("Solução para o sistema é aceitável");}
+        //if perto {println!("Solução para o sistema é aceitável");}
         perto
    }
 
@@ -349,7 +350,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut s=0.0;
         for j in 0..n{
             if j!=i {
-                if j<i {s=self.r#as[i][j].to_f64().unwrap().abs()*beta[j];}
+                if j<i {s=(self.r#as[i][j].to_f64().unwrap().abs())*beta[j];}
                 else {s=self.r#as[i][j].to_f64.unwrap().abs();}
             }
             else { beta[i]=s/self.r#as[i][i].to_f64.unwrap().abs(); }
