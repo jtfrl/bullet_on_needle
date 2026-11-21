@@ -38,26 +38,28 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let mut choice = String::new();
             std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
             let input: usize = choice.trim().parse::<usize>().expect("Erro ao ler número.");
-            x_sol=copy.retro_frontis_subs(input)?
+            let temp_x_sol=copy.retro_frontis_subs(input)?;
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
             
-            let rc_1=linearA_b.residual_check(x_sol);
+            let rc_1=linearA_b.residual_check(&temp_x_sol);
             if !rc_1 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(&x_sol,a_ls, b_ls);
+            show_res(&temp_x_sol,a_ls, b_ls);
 
+            temp_x_sol
         }
         2=>{
             // aplicaremos unwrap aqui para evitar problemas de erro
             // em atribuição de valores do x_sol
-            x_sol=copy.fact_LU()?
-            let rc_2=linearA_b.residual_check(x_sol);
+            let temp_x_sol=copy.fact_LU()?;
+            let rc_2=linearA_b.residual_check(temp_x_sol);
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
+            temp_x_sol
         }
-        3=> x_sol=copy.gauss_s(MAX_ITER)?,
-        4=> x_sol=copy.gauss_j(MAX_ITER)?,
+        3=> copy.gauss_s(MAX_ITER)?,
+        4=> copy.gauss_j(MAX_ITER)?,
         _=> panic!("\nOpção inválida. Use números entre 1 e 4.");
     }
     let sfinal_t=sol_t.elapsed();
