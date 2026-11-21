@@ -299,10 +299,11 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     x_new[i]=new_value;
 
                 } 
-
-                let r_check=self.residual_check(x_new);
+                // aplicado clone para evitar passar "para sempre" o x_new na 
+                // função residual_check
+                let r_check=self.residual_check(x_new.clone());
                 let d=LinearSystem::dist_abs(&x_new, &disguised_as_prev);
-                if d<eps | r_check{
+                if d<eps || r_check{
                     return Some(x_new);
                     break;
                 }
@@ -345,7 +346,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
      let n=self.len;
      let mut beta = vec![0.0f64;n];
 
-     // TODO: ajustar lógica aqui
      for i in 0..n{
         let mut s=0.0;
         for j in 0..n{
@@ -357,9 +357,11 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             
         }   
         // iteramos em b para ir comparando com o 0
-        // e verificar se obtemos algum valor que de fato
-        // seja menor que 1
-        beta.iter().cloned().fold(0.0, f64::max) < 1.0
+        // e verificar se obtemos algum valor 
+        // que de fato seja menor que 1
+        // usamos closure aqui para 
+        // realizar a nossa comparação
+        beta.iter().cloned().fold(0.0, |a,b| a.max(b)) < 1.0
      }
    }
 
