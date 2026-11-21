@@ -70,7 +70,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     Some(x_sol.clone())
 }
 
-fn show_res(x: Vec<f64>, a: &str, b: &str){
+fn show_res(x: &Vec<f64>, a: &str, b: &str){
     println!("\nA = {}, B = {}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
     for num in &x{
