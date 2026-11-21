@@ -60,7 +60,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
         }
         3=> copy.gauss_s(MAX_ITER)?,
         4=> copy.gauss_j(MAX_ITER)?,
-        _=> panic!("\nOpção inválida. Use números entre 1 e 4.");
+        _=> panic!("\nOpção inválida. Use números entre 1 e 4."),
     };
     let sfinal_t=sol_t.elapsed();
     show_res(&x_sol,a_ls, b_ls);
