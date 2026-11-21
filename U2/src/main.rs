@@ -55,22 +55,13 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let rc_2=linearA_b.residual_check(x_sol);
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(&x_sol.clone,a_ls, b_ls);
         }
-        3=>{
-            x_sol=copy.gauss_s(MAX_ITER)?
-            show_res(&x_sol,a_ls, b_ls);
-        }
-        4=>{
-            x_sol=copy.gauss_j(MAX_ITER)?;
-            show_res(&x_sol,a_ls, b_ls);
-        }
-        _=>{
-            panic!("\nOpção inválida. Use números entre 1 e 4.");
-        }
-
+        3=> x_sol=copy.gauss_s(MAX_ITER)?,
+        4=> x_sol=copy.gauss_j(MAX_ITER)?,
+        _=> panic!("\nOpção inválida. Use números entre 1 e 4.");
     }
     let sfinal_t=sol_t.elapsed();
+    show_res(&x_sol,a_ls, b_ls);
 
     println!("\n\nTEMPO DE CARGA: {:?} | \t TEMPO DE SOLUÇÃO: {:?}", (final_t.as_secs_f64()*1e3), (sfinal_t.as_secs_f64()*1e3));
     println!("\n\n");
