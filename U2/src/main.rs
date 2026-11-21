@@ -28,10 +28,10 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
     let n=linearA_b.r#as.len(); 
-    let mut x_sol=vec![0.0f64; n];
           
     let sol_t=Instant::now(); //> tempo de solução
     match op {
+        let mut x_sol=vec![0.0f64; n];
         1 =>{
             copy.gauss_elim();
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
