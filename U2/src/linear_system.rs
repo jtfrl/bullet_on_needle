@@ -261,7 +261,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         }
 
    // GAUSS-SEIDEL
-   pub fn gauss_s(&mut self, max_iter: u32) -> Option<Vec<f64>>{
+   pub fn gauss_s(&mut self, mut max_iter: u32) -> Option<Vec<f64>>{
             let len=self.len;
             let mut x_new               = vec![0.0f64; len];
             // abaixo: não usamos um prévio, mas precisamos de sua cópia
