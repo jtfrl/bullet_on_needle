@@ -214,7 +214,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
    }
 
     // GAUSS-JACOBI
-   pub fn gauss_j(&mut self, max_iter: u32) -> Option<Vec<f64>>
+   pub fn gauss_j(&mut self, mut max_iter: u32) -> Option<Vec<f64>>
         where T: Send+Sync{
             let len=self.len;
             let mut x_new = vec![0.0f64; len]; 
@@ -241,7 +241,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     x_new[i]=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i].to_f64().unwrap()-soma);
                   
                 }
-                let r_check=self.residual_check(x_new);
+                let r_check=self.residual_check(x_new.clone());
 
                 // usamos passagem por referencia para evitar overwrite
                 let d=LinearSystem::<f64>::dist_abs(x_new.clone(), x_prev.clone()); 
@@ -355,13 +355,14 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             else { beta[i]=s/self.r#as[i][i].to_f64().unwrap().abs(); }
             
         }   
+     }
+
         // iteramos em b para ir comparando com o 0
         // e verificar se obtemos algum valor 
         // que de fato seja menor que 1
         // usamos closure aqui para 
         // realizar a nossa comparação
         beta.iter().cloned().fold(0.0_f64, |a,b| a.max(b)) < 1.0
-     }
    }
 
 }

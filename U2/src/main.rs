@@ -38,7 +38,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let mut choice = String::new();
             std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
             let input: usize = choice.trim().parse::<usize>().expect("Erro ao ler número.");
-            x_sol=copy.retro_frontis_subs(input);
+            x_sol=copy.retro_frontis_subs(input).unwrap();
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
             
