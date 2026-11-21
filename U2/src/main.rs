@@ -28,7 +28,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
     let n=linearA_b.r#as.len(); 
-    let mut x_sol=vec![0.0f64, n];
+    let mut x_sol=vec![0.0f64; n];
           
     let sol_t=Instant::now(); //> tempo de solução
     match op {
@@ -70,7 +70,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
     println!("\n\nTEMPO DE CARGA: {:?} | \t TEMPO DE SOLUÇÃO: {:?}", (final_t.as_secs_f64()*1e3), (sfinal_t.as_secs_f64()*1e3));
     println!("\n\n");
-    show_res(x_sol,linearA_b.r#as, linearA_b.bs);
+    show_res(x_sol,a_ls, b_ls);
     Some(x_sol)
 }
 

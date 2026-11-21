@@ -82,7 +82,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     for j in (i+1)..n{ 
                         soma+=self.r#as[i][j].to_f64().unwrap()*x[j];
                     }
-                    if self.r#as[i][i].to_f64.unwrap()==0.0{
+                    if self.r#as[i][i].to_f64().unwrap()==0.0{
                         return None;
                     }
 
@@ -204,8 +204,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut max = 0.0;
 
         for sol_x in &x_new{
-            *sol_x=*sol_x.abs();
-            if max<*sol_x {max=*sol_x;}
+            let value_of_x=&sol_x.abs();
+            if max<*value_of_x {max=*value_of_x;}
         }
 
         let diff_r=diff_a/max;
@@ -295,7 +295,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         panic!("Convergência não ocorre!");
                         break;
                     }
-                    let new_value=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i].to_f64.unwrap()-soma);
+                    let new_value=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i].to_f64().unwrap()-soma);
                     x_new[i]=new_value;
 
                 } 
@@ -351,9 +351,9 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         for j in 0..n{
             if j!=i {
                 if j<i {s=(self.r#as[i][j].to_f64().unwrap().abs())*beta[j];}
-                else {s=self.r#as[i][j].to_f64.unwrap().abs();}
+                else {s=self.r#as[i][j].to_f64().unwrap().abs();}
             }
-            else { beta[i]=s/self.r#as[i][i].to_f64.unwrap().abs(); }
+            else { beta[i]=s/self.r#as[i][i].to_f64().unwrap().abs(); }
             
         }   
         // iteramos em b para ir comparando com o 0
