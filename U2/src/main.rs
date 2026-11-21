@@ -25,45 +25,45 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     let carga_t=Instant::now(); //> tempo de carga
     let mut linearA_b = LinearSystem::<BigRational>::from(a_ls, b_ls);
     let final_t=carga_t.elapsed();
+    //let mut x_sol=vec![0.0f64; n];
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
     let n=linearA_b.r#as.len(); 
           
     let sol_t=Instant::now(); //> tempo de solução
-    match op {
-        let mut x_sol=vec![0.0f64; n];
+    let x_sol: Vec<f64> = match op {
         1 =>{
             copy.gauss_elim();
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
             let mut choice = String::new();
             std::io::stdin().read_line(&mut choice).ok()?; // Se falha => NULL
             let input: usize = choice.trim().parse::<usize>().expect("Erro ao ler número.");
-            x_sol=copy.retro_frontis_subs(input).unwrap();
+            x_sol=copy.retro_frontis_subs(input)?
             // realizaremos um teste aqui para checar se o método de
             // fato consegue resolver Ax=b com eliminação de Gauss
             
             let rc_1=linearA_b.residual_check(x_sol);
             if !rc_1 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(x_sol.clone(),a_ls, b_ls);
+            show_res(&x_sol,a_ls, b_ls);
 
         }
         2=>{
             // aplicaremos unwrap aqui para evitar problemas de erro
             // em atribuição de valores do x_sol
-            x_sol=copy.fact_LU().unwrap();
+            x_sol=copy.fact_LU()?
             let rc_2=linearA_b.residual_check(x_sol);
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(x_sol.clone(),a_ls, b_ls);
+            show_res(&x_sol.clone,a_ls, b_ls);
         }
         3=>{
-            x_sol=copy.gauss_s(MAX_ITER).unwrap();
-            show_res(x_sol.clone(),a_ls, b_ls);
+            x_sol=copy.gauss_s(MAX_ITER)?
+            show_res(&x_sol,a_ls, b_ls);
         }
         4=>{
-            x_sol=copy.gauss_j(MAX_ITER).unwrap();
-            show_res(x_sol.clone(),a_ls, b_ls);
+            x_sol=copy.gauss_j(MAX_ITER)?;
+            show_res(&x_sol,a_ls, b_ls);
         }
         _=>{
             panic!("\nOpção inválida. Use números entre 1 e 4.");
