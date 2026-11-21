@@ -45,7 +45,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let rc_1=linearA_b.residual_check(temp_x_sol);
             if !rc_1 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(temp_x_sol,a_ls, b_ls);
+            show_res(&temp_x_sol,a_ls, b_ls);
 
             temp_x_sol
         }
@@ -73,7 +73,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 fn show_res(x: &Vec<f64>, a: &str, b: &str){
     println!("\nA = {}, B = {}", a, b);
     println!("\nVALORES DO VETOR x PARA Ax=b");
-    for num in &x{
+    for num in x{
         println!("\n {}", *num);
     }
 }
