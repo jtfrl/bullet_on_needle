@@ -45,7 +45,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let rc_1=linearA_b.residual_check(x_sol);
             if !rc_1 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(x_sol,a_ls, b_ls);
+            show_res(x_sol.clone(),a_ls, b_ls);
 
         }
         2=>{
@@ -74,7 +74,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
 
     println!("\n\nTEMPO DE CARGA: {:?} | \t TEMPO DE SOLUÇÃO: {:?}", (final_t.as_secs_f64()*1e3), (sfinal_t.as_secs_f64()*1e3));
     println!("\n\n");
-    Some(x_sol)
+    Some(x_sol.clone())
 }
 
 fn show_res(x: Vec<f64>, a: &str, b: &str){
