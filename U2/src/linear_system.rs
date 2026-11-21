@@ -328,7 +328,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut diff=0.0;
         let mut u=0;
         for val in &line_Ax{
-            for u in 0..len{diff=(*val-self.bs[u])to_f64.unwrap().abs();}
+            for u in 0..len{diff=(*val-self.bs[u].to_f64().unwrap()).abs();}
             if max<diff {max=diff;}
         }
 
@@ -350,8 +350,8 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut s=0.0;
         for j in 0..n{
             if j!=i {
-                if j<i {s=(self.r#as[i][j].to_f64().unwrap().abs())*beta[j];}
-                else {s=self.r#as[i][j].to_f64().unwrap().abs();}
+                if j<i {s+=(self.r#as[i][j].to_f64().unwrap().abs())*beta[j];}
+                else {s+=self.r#as[i][j].to_f64().unwrap().abs();}
             }
             else { beta[i]=s/self.r#as[i][i].to_f64().unwrap().abs(); }
             
@@ -361,7 +361,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         // que de fato seja menor que 1
         // usamos closure aqui para 
         // realizar a nossa comparação
-        beta.iter().cloned().fold(0.0, |a,b| a.max(b)) < 1.0
+        beta.iter().cloned().fold(0.0_f64, |a,b| a.max(b)) < 1.0
      }
    }
 
