@@ -70,7 +70,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     for j in (i+1)..n{
                         soma+=self.r#as[i][j].to_f64().unwrap()* x[j];
                     }
-                    if self.r#as[i][i]==0.0{
+                    if self.r#as[i][i].to_f64().unwrap()==0.0{
                         return None;
                     }
 
@@ -82,7 +82,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                     for j in (i+1)..n{ 
                         soma+=self.r#as[i][j].to_f64().unwrap()*x[j];
                     }
-                    if self.r#as[i][i]==0.0{
+                    if self.r#as[i][i].to_f64.unwrap()==0.0{
                         return None;
                     }
 
@@ -232,13 +232,13 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for i in 0..len{
                     // let soma=0.0;
                     for _i in 0..len{
-                        if _i!=i {soma=soma+self.r#as[i][_i]*x_prev[i];}
+                        if _i!=i {soma=soma+(self.r#as[i][_i].to_f64().unwrap())*x_prev[i];}
                     }
 
                     // === PASSO 2===
                     // atualizamos as soluções do vetor x
                     // de acordo com o vetor de x anterior
-                    x_new[i]=(1.0/self.r#as[i][i])*(self.bs[i]-soma);
+                    x_new[i]=(1.0/self.r#as[i][i].to_f64().unwrap())*(self.bs[i]-soma);
                   
                 }
                 let r_check=self.residual_check(x_new);
@@ -268,7 +268,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let mut disguised_as_prev   = vec![0.0f64; len]; 
             let mut soma = 0.0; 
 
-            if(0..len).any(|i| self.r#as[i][i].abs()<1e-12) {return None;}
+            if(0..len).any(|i| self.r#as[i][i].to_f64().unwrap().abs()<1e-12) {return None;}
 
             assert_eq!(self.len, x_new.len(), "Os vetores de
             solução x precisam ter o mesmo tamanho (n. de col (A) = n. de linhas (x)!");
@@ -299,7 +299,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 } 
 
-                //TODO: necessário verificar como adaptar, porque não tem previo aqui
                 let r_check=self.residual_check(x_new);
                 let d=LinearSystem::dist_abs(&x_new, &disguised_as_prev);
                 if d<eps | r_check{
@@ -327,7 +326,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut diff=0.0;
         let mut u=0;
         for val in &line_Ax{
-            for u in 0..len{diff=(*val-self.bs[u]).abs();}
+            for u in 0..len{diff=(*val-self.bs[u])to_f64.unwrap().abs();}
             if max<diff {max=diff;}
         }
 
@@ -350,10 +349,10 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut s=0.0;
         for j in 0..n{
             if j!=i {
-                if j<i {s=self.r#as[i][j].abs()*beta[j];}
-                else {s=self.r#as[i][j].abs();}
+                if j<i {s=self.r#as[i][j].to_f64().unwrap().abs()*beta[j];}
+                else {s=self.r#as[i][j].to_f64.unwrap().abs();}
             }
-            else { beta[i]=s/self.r#as[i][i].abs(); }
+            else { beta[i]=s/self.r#as[i][i].to_f64.unwrap().abs(); }
             
         }   
         // iteramos em b para ir comparando com o 0
