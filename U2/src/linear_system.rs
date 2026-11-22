@@ -379,7 +379,7 @@ impl LinearSystem<f64> {
             panic!("Erro ao ler o arquivo da matriz A ({:?}): {err}", as_path);
         });
 
-        let bs_content = fs::read_to_string(&b_matrix).unwrap_or_else(|err|{
+        let bs_content = fs::read_to_string(&bs_path).unwrap_or_else(|err|{
             panic!("Erro ao ler o arquivo do vetor b ({:?}): {err}", bs_path);
         });
 
