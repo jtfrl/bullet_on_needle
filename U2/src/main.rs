@@ -17,6 +17,8 @@ use linear_system::LinearSystem;
 // const MATRIX_NAME: &'static str = "add32.mtx";
 /* const MATRIX_NAME: &'static str = "bcsstk22.mtx";
 const VECTOR_B: &'static str = "add32.mtx"; */
+// para fins de teste, recomenda-se aplicar red_
+// evitando problemas de tamanho
 const MAX_ITER: u32 = 10000;
 
 // acima antes era: dwb512.mtx
