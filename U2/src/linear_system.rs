@@ -372,7 +372,7 @@ impl LinearSystem<f64> {
     pub fn new(matrix_name: &str, b_matrix: &str) -> Self {
         let mut as_path = Path::new(config::AS_PATH).join(matrix_name);
         as_path.set_extension("mtx");
-        let bs_path = Path::new(config::BS_PATH).join(b_matrix); // * 
+        let mut bs_path = Path::new(config::BS_PATH).join(b_matrix); // * 
         bs_path.set_extension("mtx");
 
         let as_content = fs::read_to_string(&as_path).unwrap_or_else(|err| {
