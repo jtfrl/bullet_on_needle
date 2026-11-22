@@ -79,7 +79,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             }else if op==2 {
                   for i in 0..n{
                     let mut soma=0.0f64; 
-                    for j in (i+1)..n{ 
+                    for j in 0..i{ 
                         soma+=self.r#as[i][j].to_f64().unwrap()*x[j];
                     }
                     if self.r#as[i][i].to_f64().unwrap()==0.0{
