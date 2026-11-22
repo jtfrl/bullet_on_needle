@@ -28,7 +28,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
     //let mut x_sol=vec![0.0f64; n];
 
     let mut copy=linearA_b.clone(); //> copy impede problemas nos métodos
-    let n=linearA_b.r#as.len(); 
+    //let n=linearA_b.r#as.len(); 
           
     let sol_t=Instant::now(); //> tempo de solução
     let x_sol: Vec<f64> = match op {
