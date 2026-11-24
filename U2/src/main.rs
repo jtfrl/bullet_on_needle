@@ -58,7 +58,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let rc_2=linearA_b.residual_check(temp_x_sol.clone());
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
-            show_res(&temp_x_sol,a_ls, b_ls);
+            //show_res(&temp_x_sol,a_ls, b_ls);
             temp_x_sol
         }
         3=> copy.gauss_s(MAX_ITER)?,
