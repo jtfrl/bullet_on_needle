@@ -123,7 +123,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let len = self.len;
             let mut lower: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
             let mut upper: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
-            let mut perm : Vec<usize>    = (0..n).collect(); //> permutações 
+            let mut perm : Vec<usize>    = (0..len).collect(); //> permutações 
 
             // MATRIZ INFERIOR E SUPERIOR
             for i in 0..len{
