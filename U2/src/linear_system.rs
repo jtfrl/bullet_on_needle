@@ -35,14 +35,35 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
     }
 
     pub fn gauss_elim(&mut self)
-    where T: Send + Sync {
+    where T: Send + Sync + Signed + PartialOrd{
         let len = self.len;
         for p in 0..len {       // Pivots
+            // -- busca de melhor linha -- 
+            let mut best = ṕ;
+            let mut best_entry=self.r#as[p][p].to_f64().unwrap().abs();
+            // (1) busca de melhores valores
+            for k in (p+1)..len{
+                let v = self.r#as[k][p].to_f64().unwrap().abs();
+                if v>best_entry {
+                    best = k;
+                    best_val = v;
+                }
+            }
+            // (2) impedimos que um pivo nulo seja usado
+            if best_val.is_zero(){return;}
+
+            // (3) trocamos linhas na matriz aumentada 
+            if best!=p{
+                self.r#as.swap(p, best);
+                self.bs.swap(p,best);
+            }            
+            
             for i in (p+1)..len { // Rows
-                println!("p: {p}, i: {i}");
-                let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
+                //println!("p: {p}, i: {i}");
+                if self.r#as[p][p]!= 0.0_f64{
+                    let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
+                }
                 // Li <- Li - mik * Lpivo
-                
                 self.r#as[i][p] = T::zero();
                 for j in p+1..len { // Cols
                     self.r#as[i][j] = self.r#as[i][j].clone() - m.clone() * self.r#as[p][j].clone();
