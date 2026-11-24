@@ -51,7 +51,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 }
             }
             // (2) impedimos que um pivo nulo seja usado
-            if best_entry.is_zero(){return;}
+            if best_entry<=0.0f64 {return;}
 
             // (3) trocamos linhas na matriz aumentada 
             if best!=p{
@@ -61,7 +61,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
             for i in (p+1)..len { // Rows
                 //println!("p: {p}, i: {i}");
-                if self.r#as[p][p]!= 0.0_f64{
+                if self.r#as[p][p].to_f64().unwrap()!= 0.0_f64{
                         let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
                     
                     // Li <- Li - mik * Lpivo
