@@ -380,7 +380,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
         let mut diff=0.0;
 
         for u in 0..len{
-            diff=(line_Ax[u]-self.bs[u].to_f64.unwrap().abs();)
+            diff=(line_Ax[u]-self.bs[u].to_f64().unwrap().abs();)
             if max<diff {max=diff;}
         }
     
