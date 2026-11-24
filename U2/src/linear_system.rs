@@ -123,12 +123,39 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let len = self.len;
             let mut lower: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
             let mut upper: Vec<Vec<f64>> = vec![vec![0.0f64; len];len];
+            let mut perm : Vec<usize>    = (0..n).collect(); //> permutações 
 
             // MATRIZ INFERIOR E SUPERIOR
             for i in 0..len{
+                // --- TROCAS CONDICIONAIS ---
+                // (1) busca da melhor linha
+
+                let mut best = i;
+                for k in (i+1)..len{
+                    if upper[k][i].abs()>upper[best][i].abs() {
+                        best=k;
+                    }
+                }
+
+                // (2) evitamos valores zero
+                if upper[best][i].abs()<=1e-12 {return None;}
+
+                // (3) troca dos melhores valores de linha para as submatrizes
+                if best!=i{
+                    upper.swap(i, best);
+                    perm.swap(i,best);
+                    
+                    for c in 0..i{ 
+                        let l=lower[i][c];
+                        lower[i][c]=lower[best][c];
+                        lower[best][c]=l;
+                    }
+                }
+
+
                 lower[i][i]=1.0;
-                if self.r#as[i][i].is_zero() { 
-                    panic!("Pivô nulo!");
+                if self.r#as[i][i].to_f64().unwrap()<=0.0f64 { 
+                    //panic!("Pivô nulo!");
                     return None; 
                 } // Fatora em LU, mas se zero está no pivô vai a None
                 for j in (i+1)..len{
