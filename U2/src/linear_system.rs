@@ -365,22 +365,25 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
    pub fn residual_check(&mut self, x_sol: Vec<f64>) -> bool{
         let len=self.len;
+        // nenhum valor com risco de over/underflow pode vir
+        if x_sol.iter().any(|v| !v.is_finite()) {return false;}
+
         let mut perto: bool = false;
         let mut line_Ax = vec![0.0f64; len];
         for i in 0..len{
             for j in 0..len{
-                line_Ax[i]=self.r#as[i][j].to_f64().unwrap()*x_sol[i];
+                line_Ax[i]+=self.r#as[i][j].to_f64().unwrap()*x_sol[j];
             }
         }
 
         let mut max=0.0f64;
         let mut diff=0.0;
-        let mut u=0;
-        for val in &line_Ax{
-            for u in 0..len{diff=(*val-self.bs[u].to_f64().unwrap()).abs();}
+
+        for u in 0..len{
+            diff=(line_Ax[u]-self.bs[u].to_f64.unwrap().abs();)
             if max<diff {max=diff;}
         }
-
+    
         if max<=eps{
             perto=true;
         }

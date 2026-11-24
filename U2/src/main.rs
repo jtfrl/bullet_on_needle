@@ -34,6 +34,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
           
     let sol_t=Instant::now(); //> tempo de solução
     let x_sol: Vec<f64> = match op {
+        // comentario em residual para teste
         1 =>{
             copy.gauss_elim();
             println!("\n Usar retrossubstituição (1) ou substituição frontal (2)?");
@@ -57,6 +58,7 @@ fn apply_methods(a_ls: &str, b_ls: &str, op: usize) -> Option<Vec<f64>>{
             let rc_2=linearA_b.residual_check(temp_x_sol.clone());
             if !rc_2 {panic!("Solução não aceitável (o resíduo não é menor \
             que o epsilon estabelecido!)");}
+            show_res(&temp_x_sol,a_ls, b_ls);
             temp_x_sol
         }
         3=> copy.gauss_s(MAX_ITER)?,
