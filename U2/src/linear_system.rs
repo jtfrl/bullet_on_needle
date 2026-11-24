@@ -8,7 +8,8 @@ use crate::config;
 use num_traits::{Num, 
     FromPrimitive, 
     ToPrimitive,
-    NumAssign};
+    NumAssign,
+    Signed};
 use std::ops::*;
 use std::{path::Path, fs};
 
@@ -61,16 +62,17 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             for i in (p+1)..len { // Rows
                 //println!("p: {p}, i: {i}");
                 if self.r#as[p][p]!= 0.0_f64{
-                    let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
-                }
-                // Li <- Li - mik * Lpivo
-                self.r#as[i][p] = T::zero();
-                for j in p+1..len { // Cols
-                    self.r#as[i][j] = self.r#as[i][j].clone() - m.clone() * self.r#as[p][j].clone();
-                }
+                        let m = self.r#as[i][p].clone() / self.r#as[p][p].clone(); // multiplier
+                    
+                    // Li <- Li - mik * Lpivo
+                    self.r#as[i][p] = T::zero();
+                    for j in p+1..len { // Cols
+                        self.r#as[i][j] = self.r#as[i][j].clone() - m.clone() * self.r#as[p][j].clone();
+                    }
 
-                // bi <- bi - mip*bp
-                self.bs[i] = self.bs[i].clone() - m*self.bs[p].clone();
+                    // bi <- bi - mip*bp
+                    self.bs[i] = self.bs[i].clone() - m*self.bs[p].clone();
+                }
             }
         }
     }
