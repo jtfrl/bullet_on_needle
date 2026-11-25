@@ -127,18 +127,20 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             for i in 0..len{
                 // --- TROCAS CONDICIONAIS ---
                 // (1) busca da melhor linha
-
+                
                 let mut best = i;
+                let _entry_best=self.r#as[best][i].to_f64().unwrap_or(0.0).abs();
                 for k in (i+1)..len{
                     let entry_k=self.r#as[k][i].to_f64().unwrap_or(0.0).abs();
-                    let entry_best=self.r#as[best][i].to_f64()..unwrap_or(0.0).abs();
+                    let entry_best=self.r#as[best][i].to_f64().unwrap_or(0.0).abs();
                     if entry_k>entry_best {
                         best=k;
+                        _entry_best=entry_k;
                     }
                 }
 
                 // (2) evitamos valores zero
-                if upper[best][i].abs()<=1e-12 {return None;}
+                if best_entry<=1e-12 {return None;}
 
                 // (3) troca dos melhores valores de linha para as submatrizes
                 if best!=i{
@@ -151,6 +153,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         lower[best][c]=l;
                     }
                 }
+                lower[i][i]=1.0;
                 for j in (i+1)..len{
                     let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
                     lower[j][i]=mult.to_f64()?;
