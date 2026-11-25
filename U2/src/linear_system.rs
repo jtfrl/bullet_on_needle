@@ -129,7 +129,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 // (1) busca da melhor linha
                 
                 let mut best = i;
-                let _entry_best=self.r#as[best][i].to_f64().unwrap_or(0.0).abs();
+                let mut _entry_best=self.r#as[best][i].to_f64().unwrap_or(0.0).abs();
                 for k in (i+1)..len{
                     let entry_k=self.r#as[k][i].to_f64().unwrap_or(0.0).abs();
                     let entry_best=self.r#as[best][i].to_f64().unwrap_or(0.0).abs();
