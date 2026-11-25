@@ -130,7 +130,9 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 let mut best = i;
                 for k in (i+1)..len{
-                    if upper[k][i].abs()>upper[best][i].abs() {
+                    let entry_k=self.r#as[k][i].to_f64().unwrap_or(0.0).abs();
+                    let entry_best=self.r#as[best][i].to_f64()..unwrap_or(0.0).abs();
+                    if entry_k>entry_best {
                         best=k;
                     }
                 }
@@ -140,7 +142,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
 
                 // (3) troca dos melhores valores de linha para as submatrizes
                 if best!=i{
-                    upper.swap(i, best);
+                    self.r#as.swap(i, best);
                     perm.swap(i,best);
                     
                     for c in 0..i{ 
@@ -149,13 +151,6 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                         lower[best][c]=l;
                     }
                 }
-
-
-                lower[i][i]=1.0;
-                if self.r#as[i][i].to_f64().unwrap()<=0.0f64 { 
-                    //panic!("Pivô nulo!");
-                    return None; 
-                } // Fatora em LU, mas se zero está no pivô vai a None
                 for j in (i+1)..len{
                     let mult=self.r#as[j][i].clone()/self.r#as[i][i].clone();
                     lower[j][i]=mult.to_f64()?;
@@ -179,7 +174,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for j in 0..i{
                     s+=lower[i][j]*y[j];
                 }
-                y[i]=(self.bs[i].to_f64()?-s);
+                y[i]=self.bs[perm[i]].to_f64()?-s;
             }
 
             let mut x=vec![0.0f64; len];
