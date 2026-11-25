@@ -140,7 +140,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 }
 
                 // (2) evitamos valores zero
-                if best_entry<=1e-12 {return None;}
+                if _entry_best<=1e-12 {return None;}
 
                 // (3) troca dos melhores valores de linha para as submatrizes
                 if best!=i{
