@@ -278,7 +278,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
                 for i in 0..len{
                     let soma=0.0;
                     for _i in 0..len{
-                        if _i!=i {soma=soma+(self.r#as[i][_i].to_f64().unwrap())*x_prev[j];}
+                        if _i!=i {soma=soma+(self.r#as[i][_i].to_f64().unwrap())*x_prev[_i];}
                     }
 
                     // === PASSO 2===
