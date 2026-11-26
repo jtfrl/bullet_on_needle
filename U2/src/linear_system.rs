@@ -265,7 +265,7 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             let len=self.len;
             let mut x_new = vec![0.0f64; len]; 
             let mut x_prev = vec![0.0f64; len];
-            let mut soma = 0.0;
+            //let mut soma = 0.0;
 
             if(0..len).any(|i| self.r#as[i][i].to_f64().unwrap().abs()<1e-12) {return None;}
             assert_eq!(self.len, x_prev.len(), "Os vetores de
@@ -276,9 +276,9 @@ where T: Num + Clone + FromPrimitive + ToPrimitive {
             // todas nulas[
             while max_iter>0{
                 for i in 0..len{
-                    // let soma=0.0;
+                    let soma=0.0;
                     for _i in 0..len{
-                        if _i!=i {soma=soma+(self.r#as[i][_i].to_f64().unwrap())*x_prev[i];}
+                        if _i!=i {soma=soma+(self.r#as[i][_i].to_f64().unwrap())*x_prev[j];}
                     }
 
                     // === PASSO 2===
